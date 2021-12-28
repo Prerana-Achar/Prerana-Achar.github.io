@@ -1,0 +1,1 @@
+document.write('<button type="button" onclick="Race.html" class="mainSelectionButtons">Race</button> <button type="button" onclick="Class.html" class="mainSelectionButtons">Class</button><button type="button" onclick="Background.html" class="mainSelectionButtons">Background</button>')
