@@ -1,3 +1,4 @@
+
 .mainSelectionButtons
 {
 	position: relative;
@@ -33,3 +34,7 @@ HeaderImage
          url('eaglelake-regular-webfont.woff') format('woff');
 }
 
+body
+{
+	background:#000000
+}

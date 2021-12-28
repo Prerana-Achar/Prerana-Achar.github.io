@@ -1,17 +1,26 @@
-var oXHR = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-
-    function reportStatus() {
+    function reportStatus()
+	{
+		
         if (oXHR.readyState == 4)               // REQUEST COMPLETED.
             showTheList(this.responseXML);      // ALL SET. NOW SHOW XML DATA.
-		else
-			document.getElementById("demo").innerHTML="Error?";
     }
+	
+	function loadXML(path)
+	{
+		var oXHR = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+		oXHR.onreadystatechange = reportStatus;
+		oXHR.open("GET", path, true);        // true = ASYNCHRONOUS REQUEST (DESIRABLE), false = SYNCHRONOUS REQUEST.
+		oXHR.send();
+	}
+    
 
-    oXHR.onreadystatechange = reportStatus;
-    oXHR.open("GET", "C:\College Stuff\Projects\MysticMemoirsWebsite\race-dwarf.xml", true);      // true = ASYNCHRONOUS REQUEST (DESIRABLE), false = SYNCHRONOUS REQUEST.
-    oXHR.send();
+    function showTheList(xml,id) {
 
-    function showTheList(xml) {
-		var description=xml.getElementsByTagName('description')[0].childNodes[0].nodeValue;
-        document.getElementById("demo").innerHTML=description;
-    };
+        var divInfo = document.getElementById(id);        // THE PARENT DIV.
+        
+    }
+	
+	function writeMainHeader()
+	{
+		document.write('<button type="button" onclick="Race.html" class="mainSelectionButtons">Race</button> <button type="button" onclick="Class.html" class="mainSelectionButtons">Class</button><button type="button" onclick="Background.html" class="mainSelectionButtons">Background</button>');
+	}
