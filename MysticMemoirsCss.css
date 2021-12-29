@@ -1,4 +1,3 @@
-
 .mainSelectionButtons
 {
 	position: relative;
@@ -18,6 +17,15 @@
     float : left;
 
 }
+.mainSelectionButtons:hover
+{
+	height:60px;
+}
+
+.mainSelectionButtons:focus
+{
+	height:60px;
+}
 
 HeaderImage
 {
@@ -36,5 +44,5 @@ HeaderImage
 
 body
 {
-	background:#000000
+	background:#000000;
 }

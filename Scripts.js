@@ -22,5 +22,5 @@
 	
 	function writeMainHeader()
 	{
-		document.write('<button type="button" onclick="Race.html" class="mainSelectionButtons">Race</button> <button type="button" onclick="Class.html" class="mainSelectionButtons">Class</button><button type="button" onclick="Background.html" class="mainSelectionButtons">Background</button>');
+		document.getElementById("trial").innerHTML='<button type="button" id="race" onclick="location.href=\'Race.html\'" class="mainSelectionButtons">Race</button> <button type="button" id="class" onclick="location.href=\'Class.html\'" class="mainSelectionButtons">Class</button><button type="button" id="background "onclick="location.href=\'Background.html\'" class="mainSelectionButtons">Background</button>';
 	}
