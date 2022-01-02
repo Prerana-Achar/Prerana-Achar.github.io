@@ -7,8 +7,32 @@
 		<link rel="stylesheet" href="MysticMemoirsCss.css">
 	</head>
 	<body>
-		<script src="Scripts.js">writeMainHeader();</script>
-		<HeaderImage style="top:30px;"></HeaderImage>
-		<HeaderImage style="bottom:10px;"></HeaderImage>
+		<script type = "text/javascript" src="Scripts.js"></script>
+		<div id="trial"></div>
+		<script>writeMainHeader();</script>
+		<script>
+			document.getElementById("race").style.height = "60px";
+		</script>
+
+			
+
+		<div >
+		<button class="mainSelectionButtons" style="position : absolute; width:120px; top:43px; left:auto; right:10px;">Info</button>
+		<button class="mainSelectionButtons" style="position : absolute; width:120px; top:43px; left:auto; right:385px;">Trait</button>
+		<p  id="race_heading">Dwarf</p>
+			<div id="info_viewer">
+				
+				<p id="race_description" style="text-align: center; margin-top:0px;">Text</p>
+				<hr id="line">
+				<script>writeInfo();</script>
+
+			</div>
+		</div> 
+		<Circle> 2 </Circle>	
+		<Circle> 2 </Circle>	
+		<Circle> 2 </Circle>	
+		<Circle> 2 </Circle>
+		<Circle> 2 </Circle>	
+		<Circle> 2 </Circle>		
 	</body>
 </html>
