@@ -1,0 +1,69 @@
+
+  
+  .progress {
+    background: rgba(255,255,255,0.1);
+    justify-content: flex-start;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
+    padding: 0 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    height: 30px;
+    width:70%;
+   white-space: normal;
+    
+  }
+  
+ 
+
+  .progress-value{
+    border-radius: 100px;
+    background: #e6ae9f;
+    height: 20px;
+    width: 0;
+    color: #2e2e2e;
+  }
+
+  
+
+  .pv-micro{
+    animation: load-micro 3s normal forwards;
+  }
+  @keyframes load-micro {
+    0% { width: 0; }
+    100% { width: 20%; }
+  }
+  
+  .pv-mini{
+    animation: load-mini 3s normal forwards;
+  }
+  @keyframes load-mini {
+    0% { width: 0; }
+    100% { width: 30%; }
+  }
+  
+  .pv-normal{
+    animation: load-normal 3s normal forwards;
+  }
+  @keyframes load-normal {
+    0% { width: 0; }
+    100% { width: 50%; }
+  }
+  
+  .pv-max{
+    animation: load-max 3s normal forwards;
+  }
+  @keyframes load-max {
+    0% { width: 0; }
+    100% { width: 70%; }
+  }
+  
+  .pv-mega{
+    animation: load-mega 3s normal forwards;
+  }
+  @keyframes load-mega {
+    0% { width: 0; }
+    100% { width: 90%; }
+  }
