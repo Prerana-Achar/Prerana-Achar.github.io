@@ -67,6 +67,7 @@
     color: #e6ae9f;
     letter-spacing: 1.5px;
     padding-bottom: 8px;
+    padding-top:20px ;
 }
 .timeline__event__content {
     padding: 20px;
@@ -133,13 +134,15 @@
 .timeline__event__description {
     flex-basis: 60%;
     color: #2e2e2e;
+    line-height: 1.2;
     
 
 }
+
 .timeline__event__description p{
     color: #2e2e2e;
   
-    line-height: 0.2;
+    
    
 }
 .timeline__event--type2:after {
