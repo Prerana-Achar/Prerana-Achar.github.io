@@ -582,7 +582,6 @@ section.my-work .section-heading {
     height: 100%;
     border-radius: 5px;
 }
-
 .lazyload {
     background: #f7f7f7;
 }
@@ -627,7 +626,7 @@ figure.snip1321 span {
     font-size: 15px;
     font-style: italic;
     display: block;
-    padding: 2px;
+    padding: 5%;
     color: #2e2e2e;
 }
 figure.snip1321 i {
