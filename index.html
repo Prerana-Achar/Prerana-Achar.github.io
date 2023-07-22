@@ -518,6 +518,12 @@
     <script src="assets/js/lightbox.js"></script>
     <script src="assets/js/custom.js"></script>
     <script>
+	window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
       //according to loftblog tut
       $(".main-menu li:first").addClass("active");
 
