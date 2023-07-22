@@ -1,11 +1,11 @@
-/*
-
-Reflux Template
-
-https://templatemo.com/tm-531-reflux
-
-*/
-
+:root {
+    --lightergray: #cccccc;
+    --lightgray:#b6b6b6;
+    --gray:#3b3b3b;
+    --black: #000000;
+    --white:#ffffff;
+    --pink:#e6ae9f;
+  }
 @import url(fontawesome.css);
 @import url("https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
 body {
@@ -13,7 +13,7 @@ body {
 }
 
 #page-wraper {
-    background: url(../images/page-bg.jpg) no-repeat center center fixed;
+    background: #2b2b2b;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -120,7 +120,7 @@ html {
     display: inline-block;
     font-size: 16px;
     font-weight: 700;
-    color: #2e2e2e;
+    color:var(--lightgray);
     width: 100%;
     transition: all 0.5s;
     border-top: 2px solid #2e2e2e;
@@ -129,9 +129,8 @@ html {
 .main-nav li:hover a,.main-nav li.active a
  {
     background: #2e2e2e;
-    color: #e6ae9f;
+    color: var(--pink);
 }
-
 /* Sidebar Menu */
 
 .menu .image {
@@ -151,13 +150,13 @@ html {
 
 .menu .author-content h4 {
     margin-bottom: 0px;
-    color:#2e2e2e;
+    color:var(--lightergray);
 }
 
 .menu .author-content span {
     font-size: 13px;
     font-style: italic;
-    color: #2e2e2e;
+    color:var(--lightergray);
 }
 
 .menu .social-network {
@@ -174,8 +173,8 @@ html {
     display: inline-block;
     text-align: center;
     line-height: 40px;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #2e2e2e;
+    background-color:var(--gray);
+    color: var(--lightgray);
     font-size: 14px;
     transition: all 0.5s;
 }
@@ -227,7 +226,7 @@ html {
     left: 10%;
   -webkit-transition: -webkit-transform 233ms cubic-bezier(0, 0, 0.21, 1);
   -webkit-overflow-scrolling: touch;
-  background-color: #e6ae9f;
+  background: var(--black);
   box-sizing: border-box;
   height: 100vh;  
   max-height: 100vh !important;
@@ -783,6 +782,11 @@ section.experience {
 .menu .container {
     padding-left: 0;
     padding-right: 0;
+    background: url("../images/flower.png");
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+    width: 100;
 }
 
 @media screen and (max-width: 1280px) and (min-width: 846px) {
