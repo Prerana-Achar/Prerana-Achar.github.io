@@ -239,13 +239,13 @@
 }
 
 
-@media screen and (max-width: 480px)
-{
+
+
+@media screen and (max-width: 845px) {
     .timeline__event {
         margin-bottom: 10px;
         width: 85vw;
     }
-
     .timeline__event__icon {
         padding: 10px;
         align-self: center;
@@ -258,5 +258,4 @@
         padding: 10px;
         font-size: 1.25rem;
    }
-    
 }

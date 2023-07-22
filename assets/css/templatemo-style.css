@@ -614,7 +614,6 @@ figure.snip1321 figcaption {
   z-index: 1; 
   
 }
-
 figure.snip1321 h4 {
     margin-top: 15px;
   margin-bottom: 5px;
@@ -630,15 +629,6 @@ figure.snip1321 span {
     padding: 5%;
     color: #2e2e2e;
 }
-figure.snip1321 .smallText{
-    font-size: 12.25px;
-     
-   }
-
-figure.snip1321 .mediumText{
-    font-size: 13px;
-     
-   }
 figure.snip1321 i {
   position: relative!important;
   font-size: 18px;
@@ -691,7 +681,15 @@ figure.snip1321.hover:after {
   transform: rotateX(0);
   opacity: 0.9;
 }
+figure.snip1321 .smallText{
+    font-size: 12.25px;
+     
+   }
 
+figure.snip1321 .mediumText{
+    font-size: 13px;
+     
+   }
 
 /* Contact Me */
 
@@ -723,18 +721,12 @@ section.experience {
 }
 
 
-.menu .container {
-    padding-left: 0;
-    padding-right: 0;
+
+
+
+@media screen and (max-width: 1680px) {
+   
 }
-
-
-#menu-toggle,
-#menu-close {
-    display: none;
-}  
-
-
 
 @media screen and (max-width: 1680px) and (min-width: 846px) { 
     .menu .social-network ul li a {
@@ -765,7 +757,6 @@ section.experience {
 @media screen and (max-width: 1280px) {
     .menu {
         left: 0%;
-        width: 25%;
     }
 
     .right-image-post h4,
@@ -783,16 +774,36 @@ section.experience {
     .left-image-post .white-button {
         margin-top: 25px;
     }
-
+    .menu {
+        width: 25%;
+    }
     
 }
 
+.menu .container {
+    padding-left: 0;
+    padding-right: 0;
+}
 
-@media screen and (max-width: 845px) {        
+@media screen and (max-width: 1280px) and (min-width: 846px) {
+   
+}
+
+#menu-toggle,
+#menu-close {
+    display: none;
+}  
+
+@media screen and (max-width: 845px) {     
+    
+    .section-heading {
+        
+        padding: 80px 0px;
+    }
+
     #menu-toggle,
     #menu-close {
         display: inline-block;
-        
     }    
 
     .menu {        
@@ -849,28 +860,20 @@ section.experience {
     .isotope-item {
         border-bottom: none;
         text-align: center;
-        position: relative;
-        width: 48%;
-        margin: 1%;
-       
-        padding-bottom: 30px;
-        margin-bottom: 30px;
-        
     }
     .isotope-toolbar {
         margin-bottom: 20px;
     }
 }
 
+
 @media screen and (max-width: 480px)
 {
-    .section-heading {
-        
-        padding: 80px 0px;
-    }
+    
     
     body{
         font-size: 0.75rem;
+       
     }
 
 
@@ -881,7 +884,7 @@ p {
 }
 
 h4 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #fff;
     letter-spacing: 0.25px;
@@ -889,4 +892,22 @@ h4 {
 .col-md-6 h4{
     font-size: 25px;
 }
+
+figure.snip1321 span {
+    font-size: 13px;
+    padding: 3%;
+    color: #2e2e2e;
+    line-height: 14px;
+}
+
+figure.snip1321 .smallText{
+    font-size: 11px;
+    line-height: 12px;
+     
+   }
+
+figure.snip1321 .mediumText{
+    font-size: 12px;
+     
+   }
 }
