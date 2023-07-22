@@ -237,3 +237,26 @@
         left: 100%;
    }
 }
+
+
+@media screen and (max-width: 480px)
+{
+    .timeline__event {
+        margin-bottom: 10px;
+        width: 85vw;
+    }
+
+    .timeline__event__icon {
+        padding: 10px;
+        align-self: center;
+        margin: 0 20px;
+        height: 40px;
+       
+    }
+   .timeline__event__date {
+        border-radius: 0;
+        padding: 10px;
+        font-size: 1.25rem;
+   }
+    
+}
