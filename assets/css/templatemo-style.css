@@ -594,15 +594,13 @@ figure.snip1321 {
   overflow: hidden;
   text-align: center;
   -webkit-perspective: 50em;
-  perspective: 50em;
-  
+  perspective: 50em;  
 }
 figure.snip1321 * {
   -webkit-box-sizing: padding-box;
   box-sizing: padding-box;
   -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
-  
 }
 figure.snip1321 figcaption {
  top: 45%;
@@ -611,7 +609,6 @@ figure.snip1321 figcaption {
   position: absolute;
   opacity: 0;
   z-index: 1; 
-  
 }
 figure.snip1321 h4 {
     margin-top: 15px;
@@ -619,14 +616,15 @@ figure.snip1321 h4 {
   color: #e6ae9f;
 }
 figure.snip1321 h4 p{
-    color: black; margin-bottom: -5px;
+    color: var(--lightergray);
+    margin-bottom: -5px;
 }
 figure.snip1321 span {
     font-size: 15px;
     font-style: italic;
     display: block;
     padding: 5%;
-    color: #2e2e2e;
+    color: var(--lightergray);
 }
 figure.snip1321 i {
   position: relative!important;
@@ -642,7 +640,8 @@ figure.snip1321 i {
   padding: 3px;
 }
 figure.snip1321:after {
-  background-color: #ffffff;
+    background-color:  rgba(0,0,0,0.2);
+    backdrop-filter: blur(100px);
   position: absolute;
   content: "";
   display: block;
@@ -658,6 +657,7 @@ figure.snip1321:after {
   -ms-transform-origin: 50% 50%;
   transform-origin: 50% 50%;
   opacity: 0;
+
 }
 figure.snip1321 a {
   left: 0;
