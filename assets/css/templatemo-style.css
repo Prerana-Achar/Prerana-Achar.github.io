@@ -884,13 +884,11 @@ section.experience {
 p {
     font-size: 12px;
     line-height: 18px;
-    color: #fff;
 }
 
 h4 {
     font-size: 20px;
     font-weight: 700;
-    color: #fff;
     letter-spacing: 0.25px;
 }
 .col-md-6 h4{
@@ -900,7 +898,6 @@ h4 {
 figure.snip1321 span {
     font-size: 13px;
     padding: 3%;
-    color: #2e2e2e;
     line-height: 14px;
 }
 
