@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<style>
+			strong { font-weight: bold; }
+		</style>
+	</head>
+	<body>
+		<h1 style="text-align:center"> Markdownify Text! </h1>
+		<hr/>
+		<textarea id="txt" style="height:30%; width:100%"></textarea>
+		<br/> <br/>
+		<button type="button" onclick="bold()">Markdownify</button>
+		<br/>
+		<h3> Output </h3>
+		<div id="output"></div>
+		<script>
+			function bold()
+			{
+				var text = document.getElementById("txt").value.replace(/\n/g, '<br/>')
+				var bold = /\*\*(.*?)\*\*/gm;
+				var html = text.replace(bold, '<strong>$1</strong>');            
+				document.getElementById("output").innerHTML = html;
+			}
+		</script>
+	</body>
+</html>
