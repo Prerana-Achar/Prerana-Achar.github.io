@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Prerana Achar — art practice" />
+    <title>Art Practice — Prerana Achar</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Italianno&family=Patrick+Hand&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/artpractice.css" />
+  </head>
+
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-controls="subnav"
+          aria-expanded="false"
+          aria-label="Toggle menu"
+        >
+          <span class="bar"></span>
+        </button>
+
+        <nav class="subnav" id="subnav" aria-label="Art practice sections">
+          <a href="./" class="is-active">Practice</a>
+          <a href="./basics/">Basics</a>
+          <a href="./perspective/">Perspective</a>
+          <a href="./colour-theory/">Colour Theory</a>
+          <a href="./lighting/">Lighting</a>
+        </nav>
+      </header>
+
+      <main class="content">
+        <h1 class="page-title">Practice</h1>
+        <p class="page-subtitle">A random page or a random prompt &mdash; pick your dice.</p>
+
+        <section class="learn">
+          <div class="treasure-map" aria-label="Practice journey">
+            <svg class="treasure-map__path" viewBox="0 0 1000 50" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                d="M 125 25 Q 250 5, 375 25 T 625 25 T 875 25"
+                stroke="#7a4a1f"
+                stroke-width="4"
+                fill="none"
+                stroke-dasharray="2 12"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <div class="treasure-map__stop" data-stop="basics">
+              <button class="treasure-map__mark" type="button" data-set-current="basics" title="Mark Basics as your current spot" aria-label="Mark Basics as your current spot">
+                <svg class="icon-dot" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="#c93827"/></svg>
+                <svg class="icon-x" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M8 7 L23 24"/>
+                  <path d="M24 8 L7 23"/>
+                </svg>
+              </button>
+              <a class="treasure-map__label" href="./basics/">Basics</a>
+            </div>
+
+            <div class="treasure-map__stop" data-stop="lighting">
+              <button class="treasure-map__mark" type="button" data-set-current="lighting" title="Mark Lighting as your current spot" aria-label="Mark Lighting as your current spot">
+                <svg class="icon-dot" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="#c93827"/></svg>
+                <svg class="icon-x" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M8 7 L23 24"/>
+                  <path d="M24 8 L7 23"/>
+                </svg>
+              </button>
+              <a class="treasure-map__label" href="./lighting/">Lighting</a>
+            </div>
+
+            <div class="treasure-map__stop" data-stop="perspective">
+              <button class="treasure-map__mark" type="button" data-set-current="perspective" title="Mark Perspective as your current spot" aria-label="Mark Perspective as your current spot">
+                <svg class="icon-dot" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="#c93827"/></svg>
+                <svg class="icon-x" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M8 7 L23 24"/>
+                  <path d="M24 8 L7 23"/>
+                </svg>
+              </button>
+              <a class="treasure-map__label" href="./perspective/">Perspective</a>
+            </div>
+
+            <div class="treasure-map__stop" data-stop="colour-theory">
+              <button class="treasure-map__mark" type="button" data-set-current="colour-theory" title="Mark Colour Theory as your current spot" aria-label="Mark Colour Theory as your current spot">
+                <svg class="icon-dot" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="#c93827"/></svg>
+                <svg class="icon-x" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M8 7 L23 24"/>
+                  <path d="M24 8 L7 23"/>
+                </svg>
+              </button>
+              <a class="treasure-map__label" href="./colour-theory/">Colour Theory</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="practice">
+          <div class="practice-controls">
+            <label>
+              Mode
+              <select name="mode" data-practice-mode>
+                <option value="session">Random session</option>
+                <option value="prompt">Random prompt</option>
+              </select>
+            </label>
+            <label data-session-only>
+              Minutes
+              <input type="number" name="minutes" data-practice-minutes value="25" min="5" max="120" />
+            </label>
+            <label data-prompt-only hidden>
+              Category
+              <select name="category" data-practice-category>
+                <option value="all">All</option>
+                <option value="environment">Environment</option>
+                <option value="character">Character design</option>
+                <option value="fantasy">Fantasy</option>
+              </select>
+            </label>
+            <button class="btn" type="button" data-practice-generate>Generate</button>
+          </div>
+
+          <div class="practice-exercise practice-exercise--simple">
+            <div class="practice-question" data-practice-question>
+              <p class="practice-empty">Tap <em>Generate</em> for a random session or prompt.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+    </div>
+
+    <script src="../assets/js/artpractice/exercises.js"></script>
+    <script src="../assets/js/artpractice/session.js"></script>
+    <script>
+      (function () {
+        var toggle = document.querySelector('.menu-toggle');
+        var nav = document.querySelector('.subnav');
+        if (toggle && nav) {
+          toggle.addEventListener('click', function () {
+            var open = nav.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+
+          nav.addEventListener('click', function (e) {
+            if (e.target.tagName === 'A') {
+              nav.classList.remove('is-open');
+              toggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+
+        // ── Treasure-map progress (X marks where you are) ──
+        var stops = document.querySelectorAll('.treasure-map__stop');
+        var marks = document.querySelectorAll('[data-set-current]');
+        var current = null;
+        try { current = localStorage.getItem('artpractice.currentStop'); } catch (e) {}
+        if (!current) current = 'basics';
+
+        function applyCurrent() {
+          stops.forEach(function (stop) {
+            if (stop.getAttribute('data-stop') === current) {
+              stop.classList.add('is-current');
+            } else {
+              stop.classList.remove('is-current');
+            }
+          });
+        }
+        applyCurrent();
+
+        marks.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            current = btn.getAttribute('data-set-current');
+            try { localStorage.setItem('artpractice.currentStop', current); } catch (e) {}
+            applyCurrent();
+          });
+        });
+
+      })();
+      if (window.initSessionGenerator) window.initSessionGenerator();
+    </script>
+  </body>
+</html>

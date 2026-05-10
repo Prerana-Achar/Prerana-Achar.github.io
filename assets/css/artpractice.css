@@ -1,0 +1,806 @@
+:root {
+  --paper: #f1e6c9;
+  --paper-deep: #e7d8b1;
+  --ink: #2a2620;
+  --ink-soft: #4a4036;
+  --accent: #b56a35;
+  --accent-soft: #d9a87a;
+  --muted: #8c7e63;
+  --rule: #c9b88e;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  font-family: 'Patrick Hand', 'Comic Sans MS', cursive;
+  font-size: 19px;
+  line-height: 1.75;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layered paper: warm base + soft warmth gradients + tiled fiber noise. */
+body {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(181, 106, 53, 0.12), transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(70, 50, 25, 0.10), transparent 60%),
+    radial-gradient(ellipse at 65% 30%, rgba(255, 245, 220, 0.35), transparent 50%),
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.32 0 0 0 0 0.18 0 0 0 0.50 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='3' stitchTiles='stitch' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0 0.14 0 0 0 0.24 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+  background-size: auto, auto, auto, 240px 240px, 600px 600px;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 56px;
+  position: relative;
+}
+
+/* ── Header ───────────────────────────────────────── */
+.site-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px dashed var(--rule);
+  margin-bottom: 22px;
+  min-height: 46px;
+}
+
+.brand {
+  font-family: 'Italianno', 'Patrick Hand', cursive;
+  font-size: 56px;
+  font-weight: 400;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brand:hover { color: var(--accent); }
+
+/* ── Subnav (desktop) ─────────────────────────────── */
+.subnav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.subnav a {
+  font-family: 'Patrick Hand', 'Comic Sans MS', cursive;
+  font-size: 24px;
+  color: var(--muted);
+  text-decoration: none;
+  position: relative;
+  padding: 4px 2px;
+  transition: color 0.2s ease;
+}
+
+.subnav a:hover { color: var(--ink); }
+
+.subnav a.is-active { color: var(--ink); }
+
+/* Hand-drawn pencil underline for the active tab. */
+.subnav a.is-active::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: -1px;
+  height: 6px;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q 20 1, 40 4 T 80 4 T 118 3' stroke='%23704415' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ── Hamburger ───────────────────────────────────── */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: 1.5px dashed var(--rule);
+  border-radius: 12px;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.menu-toggle:hover { border-color: var(--ink); border-style: solid; }
+
+.menu-toggle .bar,
+.menu-toggle .bar::before,
+.menu-toggle .bar::after {
+  display: block;
+  background: var(--ink);
+  height: 2px;
+  width: 22px;
+  border-radius: 1px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.25s ease, top 0.25s ease, background 0.2s ease;
+}
+
+.menu-toggle .bar { top: 50%; margin-top: -1px; }
+.menu-toggle .bar::before { content: ''; top: -8px; }
+.menu-toggle .bar::after  { content: ''; top:  8px; }
+
+.menu-toggle[aria-expanded="true"] .bar { background: transparent; }
+.menu-toggle[aria-expanded="true"] .bar::before { top: 0; transform: translateX(-50%) rotate(45deg); }
+.menu-toggle[aria-expanded="true"] .bar::after  { top: 0; transform: translateX(-50%) rotate(-45deg); }
+
+/* ── Mobile layout ────────────────────────────────── */
+@media (max-width: 720px) {
+  .page { padding: 20px 18px 80px; }
+
+  .menu-toggle { display: inline-block; }
+
+  .subnav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: -18px;
+    right: -18px;
+    background: var(--paper);
+    background-image:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 14px 24px 22px;
+    border-bottom: 1.5px dashed var(--rule);
+    box-shadow: 0 12px 24px -16px rgba(43, 30, 15, 0.3);
+    z-index: 10;
+  }
+
+  .subnav.is-open { display: flex; }
+
+  .subnav a {
+    font-size: 26px;
+    padding: 12px 4px;
+    width: 100%;
+  }
+
+  .subnav a.is-active::after {
+    left: -3px;
+    right: auto;
+    width: 70px;
+  }
+
+  .brand { font-size: 30px; }
+}
+
+/* ── Content ──────────────────────────────────────── */
+.page-title {
+  font-family: 'Italianno', 'Patrick Hand', cursive;
+  font-size: 68px;
+  font-weight: 400;
+  margin: 0 0 2px;
+  line-height: 1;
+}
+
+.page-subtitle {
+  font-family: 'Patrick Hand', cursive;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+  font-size: 19px;
+}
+
+.content { min-height: 40vh; }
+
+/* ── Sections ─────────────────────────────────────── */
+.section-title {
+  font-family: 'Italianno', 'Patrick Hand', cursive;
+  font-size: 44px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 22px 0 6px;
+  line-height: 1;
+}
+
+/* ── Learn ───────────────────────────────────────── */
+.learn-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.learn-links li {
+  font-size: 18px;
+  padding: 2px 0;
+}
+
+.learn-links a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.learn-links a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* ── Treasure-map timeline ──────────────────────── */
+.treasure-map {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 4px 0 16px;
+  padding: 0;
+}
+
+.treasure-map__path {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.treasure-map__stop {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  color: #704415;
+}
+
+.treasure-map__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  color: #704415;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.treasure-map__mark:hover {
+  background: rgba(217, 168, 122, 0.28);
+  transform: translateY(-2px);
+}
+
+.treasure-map__mark:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+.treasure-map__mark svg { display: block; }
+.treasure-map__mark .icon-dot { display: block; width: 22px; height: 22px; }
+.treasure-map__mark .icon-x { display: none; width: 30px; height: 30px; }
+
+.treasure-map__label {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.treasure-map__label:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+/* The current stop — X marks the spot. */
+.treasure-map__stop.is-current .treasure-map__mark .icon-dot { display: none; }
+.treasure-map__stop.is-current .treasure-map__mark .icon-x { display: block; }
+
+.treasure-map__stop.is-current .treasure-map__label {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .treasure-map__path { height: 38px; }
+  .treasure-map__mark { width: 40px; height: 40px; }
+  .treasure-map__mark .icon-dot { width: 18px; height: 18px; }
+  .treasure-map__mark .icon-x { width: 24px; height: 24px; }
+  .treasure-map__label { font-size: 14px; }
+  .treasure-map__stop { padding: 0 2px; }
+}
+
+/* ── Practice ────────────────────────────────────── */
+.practice-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.practice-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+
+.practice-controls select,
+.practice-controls input[type="number"],
+.practice-controls input[type="text"] {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+  color: var(--ink);
+  background: rgba(255, 250, 235, 0.55);
+  border: 1.5px dashed var(--rule);
+  border-radius: 10px;
+  padding: 8px 12px;
+  min-width: 140px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.practice-controls select:focus,
+.practice-controls input:focus {
+  border-color: var(--ink);
+  border-style: solid;
+  background: rgba(255, 250, 235, 0.85);
+}
+
+.btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 19px;
+  color: #fff8e8;
+  background: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  padding: 9px 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.btn:hover { background: #944e1f; border-color: #944e1f; }
+.btn:active { transform: translateY(1px); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px dashed var(--rule);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 250, 235, 0.55);
+  border-style: solid;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.practice-exercise {
+  position: relative;
+  border: 2px dashed var(--rule);
+  border-radius: 14px;
+  background: rgba(255, 250, 235, 0.4);
+  padding: 36px 56px 36px 24px;
+  min-height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 21px;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+
+.practice-empty {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 19px;
+  margin: 0;
+}
+
+.practice-question[hidden],
+.practice-answer[hidden] { display: none; }
+
+.practice-question,
+.practice-answer { width: 100%; }
+
+.practice-answer {
+  color: #5d3812;
+}
+
+/* Simple variant: no eye toggle, even padding (used on the random-generator page). */
+.practice-exercise--simple { padding: 36px 24px; }
+
+.practice-exercise a {
+  color: #704415;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.practice-exercise a:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+/* Eye toggle in the top-right of the exercise panel. */
+.practice-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1.5px dashed var(--rule);
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  padding: 0;
+  transition: color 0.2s ease, border-color 0.2s ease, border-style 0.2s ease, background 0.2s ease;
+}
+
+.practice-toggle:hover:not(:disabled) {
+  border-color: var(--ink);
+  border-style: solid;
+  color: var(--ink);
+}
+
+.practice-toggle[aria-pressed="true"] {
+  background: rgba(217, 168, 122, 0.28);
+  border-color: #704415;
+  border-style: solid;
+  color: #704415;
+}
+
+.practice-toggle:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.practice-toggle svg { display: block; }
+.practice-toggle .icon-eye-on { display: none; }
+.practice-toggle[aria-pressed="true"] .icon-eye-on { display: block; }
+.practice-toggle[aria-pressed="true"] .icon-eye-off { display: none; }
+
+@media (max-width: 720px) {
+  .page-title { font-size: 56px; }
+  .section-title { font-size: 38px; }
+  .practice-controls label { width: 100%; }
+  .practice-controls select,
+  .practice-controls input { width: 100%; min-width: 0; }
+  .practice-controls .btn { width: 100%; }
+  .practice-exercise { padding: 30px 50px 30px 18px; min-height: 140px; }
+  .practice-exercise--simple { padding: 30px 18px; }
+  .practice-toggle { width: 34px; height: 34px; top: 8px; right: 8px; }
+}
+
+/* ── Prerequisite line (Basics page) ────────────── */
+.practice-prereq {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 10px 0 4px;
+  line-height: 1.4;
+}
+
+/* ── Procedural exercise canvas (Basics page) ───── */
+.practice-canvas {
+  border: 2px dashed var(--rule);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(255, 250, 235, 0.4);
+  min-height: 240px;
+  margin-bottom: 14px;
+}
+
+.practice-canvas__title {
+  font-family: 'Italianno', cursive;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 10px;
+  text-align: center;
+  line-height: 1;
+}
+
+.practice-canvas svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 480px;
+}
+
+.practice-canvas .practice-empty {
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 19px;
+  margin: 70px 0;
+}
+
+.practice-canvas__note {
+  text-align: center;
+  font-family: 'Patrick Hand', cursive;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 30px 0 50px;
+  line-height: 1.5;
+}
+
+.practice-canvas__desc {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 540px;
+  margin: -2px auto 14px;
+}
+
+@media (max-width: 720px) {
+  .practice-canvas { padding: 12px; min-height: 200px; }
+  .practice-canvas__title { font-size: 28px; }
+}
+
+/* ── Exercise list (category pages) ─────────────── */
+.exercise-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exercise {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1.5px dashed var(--rule);
+  border-radius: 12px;
+  background: rgba(255, 250, 235, 0.4);
+  scroll-margin-top: 80px;
+}
+
+.exercise__name {
+  flex: 1;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.exercise__time {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 16px;
+  color: var(--muted);
+  min-width: 60px;
+  text-align: right;
+}
+
+.exercise__start {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px dashed var(--rule);
+  border-radius: 9px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, border-style 0.2s ease, background 0.2s ease;
+}
+
+.exercise__start:hover {
+  border-color: var(--ink);
+  border-style: solid;
+  background: rgba(255, 250, 235, 0.7);
+}
+
+.exercise.is-active {
+  border-color: #704415;
+  border-style: solid;
+  background: rgba(217, 168, 122, 0.18);
+}
+
+/* ── Timer ──────────────────────────────────────── */
+.practice-timer {
+  border: 2px dashed var(--rule);
+  border-radius: 14px;
+  padding: 14px 20px;
+  background: rgba(255, 250, 235, 0.55);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.practice-timer[hidden] { display: none; }
+
+.practice-timer.is-done {
+  border-color: #704415;
+  border-style: solid;
+  background: rgba(217, 168, 122, 0.3);
+}
+
+.practice-timer__display {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.practice-timer__current {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.practice-timer.is-done .practice-timer__current::after {
+  content: ' — done!';
+  color: #704415;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.practice-timer__time {
+  font-family: 'Italianno', cursive;
+  font-size: 56px;
+  color: #704415;
+  line-height: 1;
+}
+
+.practice-timer__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.practice-timer__actions button {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px dashed var(--rule);
+  border-radius: 9px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, border-style 0.2s ease;
+}
+
+.practice-timer__actions button:hover {
+  border-color: var(--ink);
+  border-style: solid;
+}
+
+/* ── Session list (Practice landing) ────────────── */
+.session-total {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+  text-align: left;
+}
+
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border: 1.5px dashed var(--rule);
+  border-radius: 10px;
+  background: rgba(255, 250, 235, 0.4);
+}
+
+.session-item__category {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.session-item__name {
+  flex: 1;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+}
+
+.session-item__name a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.session-item__name a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.session-item__time {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 15px;
+  color: var(--muted);
+  min-width: 56px;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .exercise { gap: 8px; padding: 8px 12px; }
+  .exercise__name { font-size: 17px; }
+  .exercise__time { font-size: 14px; min-width: 50px; }
+  .exercise__start { font-size: 14px; padding: 5px 10px; }
+  .practice-timer { padding: 12px 16px; }
+  .practice-timer__time { font-size: 44px; }
+  .session-item { gap: 8px; padding: 7px 10px; flex-wrap: wrap; }
+  .session-item__category { font-size: 11px; }
+  .session-item__name { font-size: 15px; }
+  .session-item__time { font-size: 14px; }
+}
+
+/* ── Footer link ──────────────────────────────────── */
+.back-home {
+  display: inline-block;
+  margin-top: 56px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+
+.back-home::before { content: '← '; }
+.back-home:hover   { color: var(--accent); }

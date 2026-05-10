@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Prerana Achar — basics practice" />
+    <title>Basics — Art Practice — Prerana Achar</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Italianno&family=Patrick+Hand&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/artpractice.css" />
+  </head>
+
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-controls="subnav"
+          aria-expanded="false"
+          aria-label="Toggle menu"
+        >
+          <span class="bar"></span>
+        </button>
+
+        <nav class="subnav" id="subnav" aria-label="Art practice sections">
+          <a href="../">Practice</a>
+          <a href="./" class="is-active">Basics</a>
+          <a href="../perspective/">Perspective</a>
+          <a href="../colour-theory/">Colour Theory</a>
+          <a href="../lighting/">Lighting</a>
+        </nav>
+      </header>
+
+      <main class="content">
+        <h1 class="page-title">Basics</h1>
+        <p class="page-subtitle">Shape, line, and proportion.</p>
+
+        <section class="practice">
+          <div class="practice-controls">
+            <label>
+              Section
+              <select data-section-pick>
+                <option value="any">Any</option>
+                <option value="lines">Lines</option>
+                <option value="ellipses">Ellipses</option>
+              </select>
+            </label>
+            <button class="btn" type="button" data-generate>Generate</button>
+          </div>
+
+          <div class="practice-timer" hidden data-timer>
+            <div class="practice-timer__display">
+              <span class="practice-timer__current" data-timer-name></span>
+              <span class="practice-timer__time" data-timer-time>00:00</span>
+            </div>
+            <div class="practice-timer__actions">
+              <button type="button" data-timer-toggle>Pause</button>
+              <button type="button" data-timer-reset>Reset</button>
+            </div>
+          </div>
+
+          <div class="practice-canvas" data-canvas>
+            <p class="practice-empty">Pick a section and tap <em>Generate</em> to draw.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../assets/js/artpractice/exercises.js"></script>
+    <script src="../../assets/js/artpractice/basics.js"></script>
+    <script>
+      (function () {
+        var toggle = document.querySelector('.menu-toggle');
+        var nav = document.querySelector('.subnav');
+        if (toggle && nav) {
+          toggle.addEventListener('click', function () {
+            var open = nav.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+
+          nav.addEventListener('click', function (e) {
+            if (e.target.tagName === 'A') {
+              nav.classList.remove('is-open');
+              toggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      })();
+      if (window.initBasicsPage) window.initBasicsPage();
+    </script>
+  </body>
+</html>
