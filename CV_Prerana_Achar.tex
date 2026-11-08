@@ -1,0 +1,275 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer CV
+% LaTeX Class
+% Version 2.0 (12/10/23)
+%
+% This class originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Omar Roldan
+% Based on a template by  Jan Vorisek (jan@vorisek.me)
+% Based on a template by Jan Küster (info@jankuester.com)
+% Modified for LaTeX Templates by Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% The MIT License (see included LICENSE file)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[9pt]{developercv} % Default font size, values from 8-12pt are recommended
+\usepackage{multicol}
+\setlength{\columnsep}{0mm}
+%----------------------------------------------------------------------------------------
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=[RGB]{100, 70, 250},
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Prerana Achar - CV},
+    pdfauthor={Prerana Achar},
+    }
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%    TITLE AND CONTACT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}[t]{0.5\textwidth}
+    \vspace{-\baselineskip} % Required for vertically aligning minipages
+
+    { \fontsize{16}{20} \textcolor{black}{\textbf{\MakeUppercase{Prerana Achar}}}} % First name
+
+    \vspace{6pt}
+
+    {M.Sc. Machine Learning Student at the University of T\"ubingen \\ Master's Student Intern at the Max Planck Institute for Intelligent Systems} % Career or current job title
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.21 \textwidth} % 20% of the page width for the first row of icons
+    \vspace{-\baselineskip} % Required for vertically aligning minipages
+
+    % The first parameter is the FontAwesome icon name, the second is the box size and the third is the text
+    \icon{Globe}{11}{\href{https://prerana-achar.github.io/}{Portfolio}}\\
+    \icon{Phone}{11}{+49 15510581465}\\
+    \icon{MapMarker}{11}{T\"ubingen, Germany}\\
+
+\end{minipage}
+\begin{minipage}[t]{0.27\textwidth} % 27% of the page width for the second row of icons
+    \vspace{-\baselineskip} % Required for vertically aligning minipages
+
+    \icon{Envelope}{11}{\href{mailto:prerana.achar@tuebingen.mpg.de}{Email}}\\
+    \icon{Github}{11}{\href{https://github.com/Prerana-Achar}{Github Profile}}\\
+    \icon{LinkedinSquare}{11}{\href{https://www.linkedin.com/in/prerana-achar-354805227/}{LinkedIn Profile}}\\
+
+\end{minipage}
+
+%----------------------------------------------------------------------------------------
+%    PUBLICATIONS
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Publications}
+\begin{entrylist}
+    \entry
+        {2025}
+        {BEDLAM2.0: Synthetic Humans and Cameras in Motion}
+        {NeurIPS 2025 (Oral)}
+        {J.~Tesch, G.~Becherini, \textbf{P.~Achar}, A.~Yiannakidis, M.~Kocabas, P.~Patel, M.~J.~Black.
+        \textit{Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track}, 2025. \textbf{Selected for oral presentation.}
+        \\ \href{https://bedlam2.is.tue.mpg.de/}{Project page} \,\textbullet\, \href{https://arxiv.org/abs/2511.14394}{arXiv:2511.14394}}
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%    RESEARCH EXPERIENCE
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Research Experience}
+\begin{entrylist}
+    \entry
+        {09/24 - Current}
+        {Max Planck Institute for Intelligent Systems - T\"ubingen, Germany}
+        {Master's Student Intern}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Researcher in the Perceiving Systems department of \href{https://scholar.google.com/citations?user=6NjbexEAAAAJ}{Dr. Michael J. Black}; co-author of \href{https://bedlam2.is.tue.mpg.de/}{BEDLAM2.0} (NeurIPS 2025 Oral), a synthetic video dataset of 8M+ images for 3D human pose and shape estimation; state-of-the-art methods trained on BEDLAM2.0 significantly outperform those trained on BEDLAM.
+            \item Owned the footwear component of the dataset: added shoes and high heels to the synthetic-human generation pipeline, including 3D footwear assets and heel-adapted body motion, increasing the realism and diversity of the rendered humans.
+        \end{itemize}
+        }
+    \entry
+        {03/23 - 05/24}
+        {Delft University of Technology - Delft, Netherlands}
+        {Bachelor's Thesis}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Thesis on \href{https://prerana-achar.github.io/assets/resources/draping.mp4}{Material-Aware Multilayered Garment Draping for Digital Humans}, supervised by \href{https://scholar.google.com/citations?user=TeoDF6MAAAAJ&hl=en}{Prof. Chirag Raman}.
+            \item Built a graph-neural-network model that drapes multiple garments over a 3D human mesh while capturing the physical material properties and structural characteristics of each layer, for realistic clothing animation.
+        \end{itemize}
+        }
+    \entry
+        {09/23 - 01/24}
+        {Universidad Rey Juan Carlos (URJC) - Madrid, Spain}
+        {Research Project}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item \href{https://github.com/Prerana-Achar/ShoeMPL}{ShoeMPL}, supervised by \href{https://scholar.google.com/citations?user=fE2rjFcAAAAJ}{Prof. Dan Casas}: a model that generates textured 3D shoe offsets for the parametric body model SMPL from text inputs.
+        \end{itemize}
+        }
+    \entry
+        {2022}
+        {Text to Textile: Generation of Optimized 3D Garments from Textual Prompts}
+        {Independent Research}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Text-to-3D clothing generator for digital humans that uses text prompts and template meshes to guide mesh deformations and generate clothing for fantasy avatars.
+            \item Includes a Blender add-on to tweak garment parameters (length, texture, sleeve height, skirt, jacket, etc.) from user-entered prompts.
+        \end{itemize}
+        }
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%    INDUSTRY EXPERIENCE
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Industry Experience}
+\begin{entrylist}
+    \entry
+        {06/23 - 08/23}
+        {JP Morgan Chase \& Co.}
+        {Software Engineering Intern}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Built abstract-syntax-tree parsing and translation of an internal database language to Azure Databricks SQL.
+        \end{itemize}
+        }
+    \entry
+        {07/22 - 08/22}
+        {Net Tech Services India Pvt Ltd}
+        {Machine Learning Intern}
+        {\vspace{-10pt}
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Improved a CNN-based OCR model from 94\% to 98\% accuracy for extracting handwritten English and Hindi data from cheques.
+        \end{itemize}
+        }
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%    EDUCATION
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Education}
+\begin{entrylist}
+    \entry
+        {10/25 - Current}
+        {University of T\"ubingen - T\"ubingen, Germany}
+        {M.Sc. Machine Learning}
+        {Core coursework: Probabilistic Machine Learning, Statistical Machine Learning, Deep Learning}
+    \entry
+        {10/20 - 06/24}
+        {Dwarkadas J. Sanghvi College of Engineering - Mumbai, India}
+        {B.Tech in IT (Honours)}
+        {GPA - \textbf{9.42/10}
+        \\ Bachelor's thesis conducted with the Pattern Recognition \& Bioinformatics group at TU Delft
+        \\ Relevant courses: Machine Learning, Advanced Machine Learning, Image Analysis and Computer Vision, Probability and Statistics, Statistical Analysis}
+    \entry
+        {2018 - 2020}
+        {Chattrabhuj Narsee Monjee School - ISC Board}
+        {Indian School Certificate}
+        {Computer Science - \textbf{100\%} \textbullet\ Overall - \textbf{96.2\%}}
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%    Achievements
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Awards and Achievements}
+\begin{entrylist}
+    \entry
+        {2025}
+        {Oral presentation at NeurIPS 2025, Datasets and Benchmarks Track (BEDLAM2.0)}
+        {}
+        {}
+    \entry
+        {2022}
+        {Smart India Hackathon (SIH) - National Winner}
+        {\href{https://prerana-achar.github.io/assets/resources/SIH.mp4}{Link to demo video}}
+        {
+        Engineered a collaborative platform and mini-game builder in Unity to teach analytical concepts to students.
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=-1pt]
+            \item Role: \textbf{Team Lead, Lead Programmer}
+            \item Grant: \textbf{Rs. 100,000}
+        \end{itemize}
+        }
+    \entry
+        {2022}
+        {Project Ivory Flame presented at the Avishkar Research Convention}
+        {}
+        {}
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%    Skills
+%----------------------------------------------------------------------------------------
+\cvsect{Skills}
+    \vspace{-6pt}
+
+    \begin{minipage}[t]{0.14\textwidth}
+        \small ML \& Vision
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.81\textwidth}
+      PyTorch, PyTorch Lightning, graph neural networks, OpenCV, 3D human body models (SMPL/SMPL-X)
+    \end{minipage}
+    \vspace{4mm}
+
+    \begin{minipage}[t]{0.14\textwidth}
+        \small Programming
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.81\textwidth}
+      Python, C++, Java, C\#, SQL, Javascript, R, Scala
+    \end{minipage}
+    \vspace{4mm}
+
+    \begin{minipage}[t]{0.14\textwidth}
+        \small 3D \& Graphics
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.81\textwidth}
+      Blender (incl. Python scripting), Unity3D, Marvelous Designer, Autodesk Maya, Autodesk Mudbox
+    \end{minipage}
+    \vspace{4mm}
+
+    \begin{minipage}[t]{0.14\textwidth}
+        \small Tools
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.81\textwidth}
+      Git/Github, Docker, Linux (Ubuntu/WSL), LaTeX, MongoDB
+    \end{minipage}
+    \vspace{4mm}
+
+%----------------------------------------------------------------------------------------
+%    LANGUAGES
+%----------------------------------------------------------------------------------------
+    \cvsect{Languages}
+    \vspace{-6pt}
+    \hspace{26mm}
+    \begin{minipage}[t]{0.3\textwidth}
+            \textbf{English} - Fluent\\
+            \textbf{Kannada} - Native\\
+            \textbf{Hindi} - Fluent\\
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+            \textbf{Tulu} - Conversational\\
+            \textbf{German} - Basic\\
+            \textbf{Marathi} - Basic\\
+            \\
+    \end{minipage}
+
+\end{document}

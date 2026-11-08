@@ -594,7 +594,11 @@ figure.snip1321 {
   overflow: hidden;
   text-align: center;
   -webkit-perspective: 50em;
-  perspective: 50em;  
+  perspective: 50em;
+}
+figure.snip1321 > img {
+  aspect-ratio: 1316 / 945;
+  object-fit: cover;
 }
 figure.snip1321 * {
   -webkit-box-sizing: padding-box;
