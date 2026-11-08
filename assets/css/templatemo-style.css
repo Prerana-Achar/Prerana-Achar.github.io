@@ -699,6 +699,10 @@ figure.snip1321 .mediumText{
 section.experience {
     border-bottom: none;
 }
+section.publications {
+    min-height: unset;
+    border-bottom: 3px solid rgba(250, 250, 250, 0.25);
+}
 .experience .places{
     margin-bottom: 30px;
 }

@@ -65,6 +65,22 @@
       layoutMode: "masonry"
     });
 
+    // Isotope measures item heights at init, before images have loaded;
+    // re-layout as each image arrives so cards don't overlap on first visit
+    $isotope
+      .find("img")
+      .one("load", function() {
+        $isotope.isotope("layout");
+      })
+      .each(function() {
+        if (this.complete) {
+          $(this).trigger("load");
+        }
+      });
+    $(window).on("load", function() {
+      $isotope.isotope("layout");
+    });
+
     $(this).on("change", filter);
     filter();
   });
