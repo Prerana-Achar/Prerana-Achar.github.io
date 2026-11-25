@@ -62,8 +62,8 @@ function violin(midi){
  let body='<path class="violin-neck" d="M133 47L662 36V194L133 183Z"/><path class="nut" d="M136 46V184"/>';
  // Four familiar first-position tape guides: 1, high 2, 3 and 4.
  [2,4,5,7].forEach((offset,i)=>{body+=`<path class="finger-guide" d="M${violinX(offset)} 40V190"/>`+text(violinX(offset),22,i+1,'finger-guide-label')});
- tuning.violin.forEach((m,i)=>{const y=66+(3-i)*32;body+=`<path class="instrument-string" d="M86 ${y}H668"/>`+text(58,y+5,name(m))});
- body+=marker(position,position?violinX(position.fret):0,position?66+(3-position.string)*32:0);
+ tuning.violin.forEach((m,i)=>{const y=66+(3-i)*32;body+=`<path class="instrument-string ${position?.finger===0&&position.string===i?'is-open-string':''}" data-violin-string="${i}" d="M86 ${y}H668"/>`+text(58,y+5,name(m))});
+ body+=marker(position?.finger?position:null,position?violinX(position.fret):0,position?66+(3-position.string)*32:0);
  const detail=!position?'Shift needed · outside the first-position guide':position.finger===0?'Open '+name(position.open)+' string':name(position.open)+' string · finger '+position.finger+(position.adjustment?' '+position.adjustment:'')+' · first position';
  return {markup:svg(body,detail),detail};
 }
@@ -118,8 +118,9 @@ function render(container,key,midi,transpose=0,options={}){
   const target=keyboardModel(midi,options).find(k=>k.midi===midi),mark=container.querySelector('.piano-hand-marker');
   if(target&&mark){mark.setAttribute('transform',`translate(${target.x+target.width/2} ${target.black?90:148})`);mark.querySelector('.finger-number').textContent=options.finger||1}
  }else if(key==='violin'||key==='guitar'){
-  const position=stringPosition(key,midi),mark=container.querySelector('.string-marker');mark.setAttribute('visibility',position?'visible':'hidden');
-  if(position){const x=key==='violin'?violinX(position.fret):position.fret===0?103:126+(position.fret-.5)*540/(options.guitarFrets||12),y=key==='violin'?66+(3-position.string)*32:54+(5-position.string)*25;mark.setAttribute('transform',`translate(${x} ${y})`);mark.querySelector('.finger-number').textContent=position.finger}
+  const position=stringPosition(key,midi),mark=container.querySelector('.string-marker');mark.setAttribute('visibility',position&&(key!=='violin'||position.finger!==0)?'visible':'hidden');
+  if(key==='violin')for(let i=0;i<4;i++)container.querySelector(`[data-violin-string="${i}"]`).classList.toggle('is-open-string',position?.finger===0&&position.string===i);
+  if(position){const x=key==='violin'?violinX(position.fret):position.fret===0?103:126+(position.fret-.5)*540/(options.guitarFrets||12),y=key==='violin'?66+(3-position.string)*32:54+(5-position.string)*25;mark.setAttribute('transform',`translate(${x} ${y})`);mark.querySelector('.finger-number').textContent=key==='violin'&&position.finger===0?'':position.finger}
  }else{
   const down=new Set(fluteFingering(midi)||[]);for(const [id]of fluteKeys)container.querySelector(`[data-key="${id}"]`).classList.toggle('is-pressed',down.has(id));
  }

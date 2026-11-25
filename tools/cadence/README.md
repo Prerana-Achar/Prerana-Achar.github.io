@@ -22,8 +22,8 @@ audio stay on the device. See vendor/browser-omr/NOTICE.md for dependencies,
 licenses and the external upstream model-host dependency.
 
 Choose a clear, unlocked printed PDF with 1–12 pages, up to 20 MB. Recognition can
-take several minutes, especially on slower devices. Progress appears below the
-score; Reset cancels the import and terminates its worker. Review detected notes
+take several minutes, especially on slower devices. Progress appears in a modal above the dimmed
+workspace; Reset cancels the import and terminates its worker. Review detected notes
 before practicing. Repeats are practiced as printed rather than unfolded; grace
 notes are omitted. Drum notation and tablature are unsupported.
 
@@ -44,18 +44,23 @@ Your instrument now chooses the sound for both Hear this part and Automatic
 playback after a mistake. Piano, nylon guitar, violin and flute use their corresponding FluidR3 GM samples. Playback stays at concert pitch, including for
 transposing instruments. Metronome clicks keep their separate simple tone.
 
-Instrument banks download on demand from
-https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/ and are cached in memory
-for this page session. Only the required pitches are decoded. This needs an
-internet connection on first use; downloads time out after 15 seconds. If a bank
-or note cannot load, an instrument-specific synthesized fallback is used and
-identified beside Your instrument. Reset cancels a pending start, and stopping
-playback cancels scheduled sample sources as well as synthesized notes.
-Long held notes may decay to silence when their recorded sample ends.
+All four FluidR3 GM instrument sets are bundled in vendor/soundfonts/FluidR3_GM/:
+352 MP3s, covering A0–C8 for each instrument, totaling 7,722,872 bytes (7.4 MiB).
+The player loads only the notes needed for the selected passage, from this site's
+own URL. It makes no requests to an external instrument-sample host and executes
+no downloaded JavaScript. Keep vendor/soundfonts/ in the GitHub Pages publish.
 
-Samples: FluidR3 GM by Frank Wen, rendered for MIDI.js by Benjamin Gleitzman,
-CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/). The downloaded
-JavaScript wrapper is parsed as JSON data and is never executed.
+Four notes load concurrently and decoded samples stay cached for the session.
+A missing or damaged note can use the nearest successfully decoded sample within
+one octave, retuned to the target pitch. Other unavailable notes retain the
+synthesized fallback individually. Out-of-bank pitches reuse A0 or C8 with the
+playback rate adjusted. Cancellation aborts in-flight loading. Long held notes
+may decay when their recorded sample ends.
+
+Source, license and attribution are recorded in vendor/soundfonts/NOTICE.md.
+Samples are FluidR3 GM by Frank Wen, rendered for MIDI.js by Benjamin Gleitzman,
+licensed under CC BY 3.0. These are actual recorded soundfont samples; they are
+production assets, not demo scores or test fixtures.
 
 The ABCJS score now wraps measures into systems using the available panel width,
 with Standard, Comfortable and Large note sizes, measure numbers and additional
@@ -110,3 +115,24 @@ Fingering references:
 
 Cadence opens without a sample score. Upload a PDF or MIDI to enable preview
 and practice. No demo download, simulated take or bundled demo MIDI is included.
+
+The Song position slider works in both views. Dragging during preview stops the
+old scheduled notes and continues from the chosen time on release. During live
+practice it pauses the microphone and starts a fresh take at the chosen note;
+Resume practice continues from there. Skipped notes are not marked missed.
+The slider is limited to Start measure / Practice measures.
+
+Open violin strings highlight the string itself and show no zero or finger dot.
+Sheet music uses the ABCJS renderer's fill and stroke attributes with separate
+dark paper and ink colors; the icon styles do not apply to notation SVGs.
+
+## Song chooser
+
+Select song opens a searchable library filtered to the current instrument. The
+14 locally bundled MIDI choices are selected Mutopia editions for piano, violin,
+guitar and flute. Selecting a piece also selects its instrument. Nothing loads
+automatically on startup. The chooser links to the full Mutopia instrument
+catalog in a new tab; this is not an embedded live catalog or external API.
+Download additional scores there and use Import from files for PDF or MIDI.
+Edition credits and licenses are visible in the chooser and library/NOTICE.md.
+Keep song-library.js and library/midi/ in the GitHub Pages publish.
