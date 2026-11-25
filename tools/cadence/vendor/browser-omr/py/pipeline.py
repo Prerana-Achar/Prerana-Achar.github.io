@@ -125,13 +125,18 @@ def _mark_octave_clefs(image, staff, symbols, carried):
 _parse_staff_image = staff_parsing.parse_staff_image
 _build_clef = music_xml_generator.build_clef
 _line_above = None  # (top of the staff, how its octave clefs ended) of the last staff read
+_activity = lambda text: None
+_staffs_read = 0
 
 
 def _parse_staff_image_with_octave_clefs(debug, index, staff, image, *args, **kwargs):
     # (Placing notes far from the staff by their notehead blob instead of the transformer's
     # count of ledger lines was tried here: no gain, chord heads run together.)
-    global _line_above
+    global _line_above, _staffs_read
+    _activity(f"Reading staff {_staffs_read + 1} on page {_page + 1}…")
     symbols = _parse_staff_image(debug, index, staff, image, *args, **kwargs)
+    _staffs_read += 1
+    _activity(f"Finished staff {_staffs_read} on page {_page + 1}…")
     # homr reads a part line by line down the page, then starts the next part at the top.
     carried = _line_above[1] if _line_above and _line_above[0] < staff.min_y else {}
     _line_above = (staff.min_y, _mark_octave_clefs(image, staff, symbols, carried))
@@ -260,8 +265,10 @@ def _staff_boxes(rows, to_input):
 
 def _read_page(path):
     """One page image -> (MusicXML <score-partwise> element, staff boxes)."""
-    global _line_above
+    global _line_above, _staffs_read
     _line_above = None
+    _staffs_read = 0
+    _activity(f"Finding staves and symbols on page {_page + 1}…")
     rows, image, debug, _, _, to_input = detect_staffs_in_image(path, _CONFIG)
     try:
         rows = _split_unjoined_systems(image, repair_systems(debug, rows))
@@ -311,10 +318,11 @@ def _give_every_staff_a_clef(score):
                 first.insert(list(first).index(last[-1]) + 1 if last else len(first), copy)
 
 
-def scan(paths, progress=lambda done, total: None):
+def scan(paths, progress=lambda done, total: None, activity=lambda text: None):
     """Recognise each page image; pages without music are skipped. Returns MusicXML text.
     The staff boxes of every page ride along as the miscellaneous field "staff-layout"."""
-    global _page
+    global _page, _activity
+    _activity = activity
     with tempfile.TemporaryDirectory() as tmp:
         xmls, layout = [], [[] for _ in paths]
         skipped = []

@@ -141,3 +141,9 @@ and uses pixel decoding for scanned images. Rendering errors are not ignored;
 all-white rendered pages are filtered before loading the recognition models.
 Only a specific no-staff detection result is skipped by the recognition pipeline;
 other page failures retain their page number and original cause in Technical details.
+
+PDF recognition reports staff-reading activity within each page. An indeterminate
+bar is used while the remaining work is unknown, rather than a misleading 0% for
+a one-page score. The modal shows elapsed time; its timer stops on completion,
+cancellation, reset or error. Downloads and completed-page counts use measured
+percentages. These indicators do not estimate time remaining.

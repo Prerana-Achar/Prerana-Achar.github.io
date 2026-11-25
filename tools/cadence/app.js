@@ -34,7 +34,7 @@ function metronomeClick(midi,when,length=.25,volume=.09,type='triangle'){
  const ac=audioContext(),osc=ac.createOscillator(),gain=ac.createGain();osc.type=type;osc.frequency.value=440*2**((midi-69)/12);gain.gain.setValueAtTime(0,when);gain.gain.linearRampToValueAtTime(volume,when+.008);gain.gain.exponentialRampToValueAtTime(.0001,when+Math.max(.02,length));osc.connect(gain);gain.connect(ac.destination);osc.start(when);osc.stop(when+length+.02);const item={osc,gain};metronomeVoices.push(item);osc.onended=()=>{osc.disconnect();gain.disconnect();metronomeVoices=metronomeVoices.filter(n=>n!==item)};
 }
 function setControls(){const locked=running();$('playhead').disabled=!song||['importing','requesting'].includes(phase);$('start-button').disabled=!song||phase==='importing';$('reset-button').disabled=!song&&phase!=='importing';for(const id of ['check-timing','part-select','instrument-select','speed','start-bar','line-select','timing-select','midi-file','select-song','automatic-playback','measure-count','automatic-tempo'])$(id).disabled=locked;$('preview-button').disabled=!song||['playing','armed','learning','requesting','importing'].includes(phase);$('mic-button').disabled=locked&&phase!=='requesting';const text=phase==='requesting'?'Cancel':phase==='preview'?'Start practice':['playing','armed','learning'].includes(phase)?'Pause practice':phase==='paused'?'Resume practice':phase==='finished'?'Try again':'Start practice';$('start-button').lastElementChild.textContent=text;$('preview-button').lastElementChild.textContent=phase==='preview'?'Stop preview':'Hear this part';for(const id of ['speed','timing-select','latency','click-sound'])$(id).disabled=locked||!timed();$('wrong-label').textContent=timed()?'Pitch / timing':'Wrong attempts';$('missed-stat').hidden=!timed();$('speed').disabled=locked||!timed()||autoTempo();$('automatic-tempo').disabled=locked||!timed();$('speed-value').textContent=!timed()?'—':autoTempo()&&detectedSpeed===null?'Automatic':Math.round(speed()*100)+'%';renderInstrumentNote()}
-function reset({keepFeedback=false}={}){seeking=false;seekWasPreview=false;if($('pdf-import-dialog').open)$('pdf-import-dialog').close();instrumentIndex=0;instrumentSignature='';detectedSpeed=null;tempoEstimated=false;calibration=null;calibrationNotes=[];learningIndex=0;importController?.abort();importController=null;generation++;silence();stopMicrophone();phase='idle';judge=null;sessionNotes=[];lastCurrent=null;position=song?.bars[Number($('start-bar').value)||0]?.time||0;origin=position;endTime=song?practiceEnd():0;clearResults();setControls();updateStats();updateClock();if(!keepFeedback)feedback('A fresh start, every time.',timed()?'Press Start practice, then play the highlighted note to start the clock.':'Press Start practice and play the highlighted note. We’ll wait until it’s right.');}
+function reset({keepFeedback=false}={}){stopPdfProgress();seeking=false;seekWasPreview=false;if($('pdf-import-dialog').open)$('pdf-import-dialog').close();instrumentIndex=0;instrumentSignature='';detectedSpeed=null;tempoEstimated=false;calibration=null;calibrationNotes=[];learningIndex=0;importController?.abort();importController=null;generation++;silence();stopMicrophone();phase='idle';judge=null;sessionNotes=[];lastCurrent=null;position=song?.bars[Number($('start-bar').value)||0]?.time||0;origin=position;endTime=song?practiceEnd():0;clearResults();setControls();updateStats();updateClock();if(!keepFeedback)feedback('A fresh start, every time.',timed()?'Press Start practice, then play the highlighted note to start the clock.':'Press Start practice and play the highlighted note. We’ll wait until it’s right.');}
 function clearResults(){for(const id of scoreMap.keys())paint(id);$('review-list').replaceChildren();$('review-count').textContent='0 notes to revisit';$('extra-notes').textContent='';$('session-caption').textContent='Small steps sound good.'}
 function barForTick(tick){let best=0;for(let i=0;i<song.bars.length;i++){if(song.bars[i].start>tick)break;best=i}return best}
 function currentNote(){let lo=0,hi=notes.length;while(lo<hi){const mid=(lo+hi)>>1;if(notes[mid].end<position)lo=mid+1;else hi=mid}const n=notes[lo];return n&&position>=n.time-.1&&position<=n.end?n:null}
@@ -103,7 +103,12 @@ function partLabel(item){
 function loadMidi(bytes,title,sourceKind='midi',sourceInstrument=null){
  const parsed=M.parseMidi(bytes);if(!parsed.parts.some(p=>!p.percussion))throw Error('This MIDI contains percussion only. Choose a file with a pitched instrument part.');reset();song=parsed;scoreSource=sourceKind;libraryInstrument=sourceKind==='library'&&M.instruments[sourceInstrument]?sourceInstrument:null;$('score-title').textContent=title;$('file-kind').textContent='YOUR MIDI SCORE';$('part-select').replaceChildren();for(const p of song.parts){const option=new Option(partLabel(p),p.id);option.disabled=p.percussion;$('part-select').add(option)}const first=song.parts.find(p=>!p.percussion);if(first)$('part-select').value=first.id;$('start-bar').replaceChildren();for(const bar of song.bars)$('start-bar').add(new Option('Measure '+(bar.index+1),bar.index));$('start-bar').value='0';rebuild();
 }
+let pdfProgressTimer=null,pdfImportStarted=0;
+function stopPdfProgress(){clearInterval(pdfProgressTimer);pdfProgressTimer=null}
 function showPdfImport(file){
+ stopPdfProgress();pdfImportStarted=performance.now();
+ const updateElapsed=()=>{$('pdf-import-elapsed').textContent=formatTime((performance.now()-pdfImportStarted)/1000)+' elapsed'};
+ updateElapsed();pdfProgressTimer=setInterval(updateElapsed,1000);
  const dialog=$('pdf-import-dialog');dialog.dataset.state='working';dialog.setAttribute('aria-busy','true');
  $('pdf-import-title').textContent='Reading your score';$('pdf-import-filename').textContent=file.name;
  $('pdf-import-error-details').hidden=true;$('pdf-import-error-details').open=false;$('pdf-import-error-text').textContent='';
@@ -117,12 +122,14 @@ function updatePdfProgress(text,{stage='load',done,total}={}){
  const steps=['prepare','load','read','finish'],current=steps.indexOf(stage==='download'?'load':stage);
  for(const item of dialog.querySelectorAll('[data-stage]')){const index=steps.indexOf(item.dataset.stage);item.dataset.state=index<current?'done':index===current?'current':'waiting';if(index===current)item.setAttribute('aria-current','step');else item.removeAttribute('aria-current')}
  $('pdf-import-message').textContent=text;
- const progress=$('pdf-import-progress'),known=Number.isFinite(done)&&Number.isFinite(total)&&total>0,percent=known?Math.max(0,Math.min(100,Math.round(done/total*100))):null;
+ const progress=$('pdf-import-progress'),known=Number.isFinite(done)&&Number.isFinite(total)&&total>0&&!(stage==='read'&&done===0),percent=known?Math.max(0,Math.min(100,Math.round(done/total*100))):null;
  if(known)progress.value=percent;else progress.removeAttribute('value');
- const label=stage==='download'?'Download':stage==='prepare'?'Page preparation':stage==='read'?'Pages processed':stage==='finish'?'Finishing':'Loading recognition tools';
+ const label=stage==='download'?'Download':stage==='prepare'?'Page preparation':stage==='read'?(known?'Pages processed':'Recognition in progress'):stage==='finish'?'Finishing':'Loading recognition tools';
  $('pdf-import-progress-label').textContent=known?label+' · '+percent+'%':label+'…';
+ if(stage==='read')$('pdf-import-hint').textContent='Reading dense pages can take several minutes. You can cancel at any time.';
 }
 function pdfImportError(message,{title='Could not read this PDF',details=''}={}){
+ stopPdfProgress();
  const dialog=$('pdf-import-dialog');dialog.dataset.state='error';dialog.setAttribute('aria-busy','false');
  $('pdf-import-title').textContent=title;$('pdf-import-message').textContent=message;
  $('pdf-import-progress').hidden=true;$('pdf-import-progress-label').hidden=true;$('pdf-import-hint').textContent='You can close this window and choose another PDF or MIDI.';
@@ -279,6 +286,7 @@ async function preview(){
  }catch(error){if(token!==generation)return;silence();phase='idle';setControls();status('Could not play the reference: '+error.message)}
 }
 $('playhead').addEventListener('pointerdown',beginSeek);$('playhead').oninput=showSeekPosition;$('playhead').onchange=endSeek;$('playhead').addEventListener('pointerup',endSeek);$('playhead').addEventListener('pointercancel',endSeek);
+$('pdf-import-dialog').addEventListener('close',()=>{if(!$('pdf-import-dialog').open)stopPdfProgress()});
 $('pdf-import-action').onclick=cancelPdfImport;$('pdf-import-dialog').addEventListener('cancel',event=>{event.preventDefault();cancelPdfImport()});
 $('midi-file').onchange=event=>{const file=event.target.files[0];event.target.value='';importFile(file)};
 let songRequest=null;
