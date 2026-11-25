@@ -2,13 +2,13 @@
 
 ## Copy to your website
 
-Copy this entire **cadence** folder into the publishing root of your
-**prerana-achar.github.io** repository, beside your existing homepage.
-The important file location is **cadence/index.html**; do not add a dist folder
+Copy this entire **cadence** folder into the **tools** folder in the publishing
+root of your **prerana-achar.github.io** repository.
+The important file location is **tools/cadence/index.html**; do not add a dist folder
 or another cadence folder around it. Commit those files using your normal
 GitHub workflow. The page will be at:
 
-https://prerana-achar.github.io/cadence/
+https://prerana-achar.github.io/tools/cadence/
 
 No npm, build command, server, API key, hosting manifest, Jekyll configuration
 change or repository-wide workflow change is required for the practice website.
@@ -78,7 +78,7 @@ manual override, expected-note playback, and standard beam/accidental notation.
 
 The source project's automated tests cover MIDI parsing, notation bindings,
 pitch detection, timing, automatic/manual tempo and PDF import failures.
-This export is checked for /cadence/ asset paths and exact copied file hashes.
+This export is checked for /tools/cadence/ asset paths and exact copied file hashes.
 The local reader has also been tested through real HTTP PDF recognition.
 Physical microphone accuracy and browser local-network permission prompts
 depend on the device and still need an on-device check.
