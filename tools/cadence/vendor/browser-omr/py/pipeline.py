@@ -81,6 +81,42 @@ def _has_eight_below(image, x0, x1, lines, limit, bass):
     )
 
 
+def _has_eight_above(image, x0, x1, lines):
+    """Recognise the two enclosed holes of an 8 above a clef, at staff scale."""
+    unit = (lines[4] - lines[0]) / 4
+    if unit <= 0:
+        return False
+    region = image[max(0, int(lines[0] - 5 * unit)):max(0, int(lines[0] - .8 * unit)),
+                   max(0, int(x0)):int(x1)]
+    if region.size == 0:
+        return False
+    paper = _ink(region) == 0
+    height, width = paper.shape
+    seen = np.zeros(paper.shape, dtype=bool)
+    holes = []
+    for y, x in zip(*np.where(paper)):
+        if seen[y, x]:
+            continue
+        stack, boundary = [(int(y), int(x))], False
+        seen[y, x] = True
+        left = right = int(x)
+        top = bottom = int(y)
+        while stack:
+            cy, cx = stack.pop()
+            left, right = min(left, cx), max(right, cx)
+            top, bottom = min(top, cy), max(bottom, cy)
+            boundary |= cy == 0 or cx == 0 or cy == height - 1 or cx == width - 1
+            for ny, nx in ((cy-1, cx), (cy+1, cx), (cy, cx-1), (cy, cx+1)):
+                if 0 <= ny < height and 0 <= nx < width and paper[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    stack.append((ny, nx))
+        w, h = right - left + 1, bottom - top + 1
+        if not boundary and .15 * unit <= w <= .65 * unit and .15 * unit <= h <= .65 * unit:
+            holes.append(((left + right) / 2, (top + bottom) / 2))
+    return any(abs(ax-bx) < .25 * unit and .2 * unit < by-ay < 1.1 * unit
+               for ax, ay in holes for bx, by in holes)
+
+
 def _has_pitch(symbol):
     """A note the transformer gave a pitch like "C4" (now and then it gives none)."""
     return symbol.rhythm.startswith("note") and symbol.pitch[:1] in tuple("CDEFGAB") and symbol.pitch[1:].isdigit()
@@ -91,18 +127,17 @@ def _staff_name(symbol):
 
 
 def _mark_octave_clefs(image, staff, symbols, carried):
-    """Renames clefs with an 8 below to clef_.._8vb and lowers the notes they govern.
-    The first clef of a staff sits at its start; a later one (a clef change) is looked
-    for around where the transformer saw it. `carried` is how the line above ended,
-    {staff name: (lowered, clef sign)}: a line starts as the last one ended, so an 8
-    which is missed there is still known. Returns the same for this line."""
+    """Keep octave-clef sounding pitches, including 8va above and 8vb below.
+    State is {staff name: (octave shift, clef sign)} and carries across systems.
+    """
     state, started = dict(carried), set()
     for symbol in symbols:
         name = _staff_name(symbol)
         if symbol.rhythm.startswith(("note", "rest")):
             started.add(name)
-            if state.get(name, (False,))[0] and _has_pitch(symbol):
-                symbol.pitch = symbol.pitch[:-1] + str(int(symbol.pitch[-1]) - 1)
+            shift = state.get(name, (0,))[0]
+            if shift and _has_pitch(symbol):
+                symbol.pitch = symbol.pitch[0] + str(int(symbol.pitch[1:]) + shift)
         elif symbol.rhythm.startswith("clef"):
             sign = symbol.rhythm.split("_")[1][0]
             change = name in started and symbol.image_coordinates
@@ -110,15 +145,18 @@ def _mark_octave_clefs(image, staff, symbols, carried):
             k = 5 if name == "lower" else 0
             if point is None or len(point.y) < k + 5:
                 continue
-            lines = point.y[k : k + 5]
+            lines = point.y[k:k+5]
             unit = (lines[4] - lines[0]) / 4
             x = symbol.image_coordinates[0] if change else point.x + 1.5 * unit
             limit = point.y[5] - unit if k == 0 and len(point.y) > 5 else image.shape[0]
-            found = _has_eight_below(image, x - 2.5 * unit, x + 2.5 * unit, lines, limit, sign == "F")
-            lowered = found or (name not in started and carried.get(name) == (True, sign))
-            state[name] = (lowered, sign)
-            if lowered:
-                symbol.rhythm += "_8vb"
+            below = _has_eight_below(image, x-2.5*unit, x+2.5*unit, lines, limit, sign == "F")
+            above = _has_eight_above(image, x-2.5*unit, x+2.5*unit, lines)
+            shift = -1 if below else 1 if above else 0
+            if not shift and name not in started and carried.get(name, (0, None))[1] == sign:
+                shift = carried[name][0]
+            state[name] = (shift, sign)
+            if shift:
+                symbol.rhythm += "_8va" if shift > 0 else "_8vb"
     return state
 
 
@@ -145,8 +183,47 @@ def _parse_staff_image_with_octave_clefs(debug, index, staff, image, *args, **kw
 
 def _build_clef_with_octave(model_clef, attributes):
     _build_clef(model_clef, attributes)
-    if model_clef.rhythm.endswith("_8vb"):
-        ET.SubElement(attributes.findall("clef")[-1], "clef-octave-change").text = "-1"
+    if model_clef.rhythm.endswith(("_8vb", "_8va")):
+        ET.SubElement(attributes.findall("clef")[-1], "clef-octave-change").text = "1" if model_clef.rhythm.endswith("_8va") else "-1"
+
+
+def _preserve_system_time_signatures(chords):
+    """The model encodes the denominator only (e.g. timeSignature-/4).
+    A printed 3/4 after 4/4 therefore has the same token. Keep each printed change
+    after music or at a new system so homr can estimate its own numerator.
+    Duplicate signatures before the same notes are still collapsed.
+    """
+    clefs, key, time, time_pending = {}, "", "", False
+    result_chords = []
+    for chord in chords:
+        result = []
+        for symbol in chord:
+            rhythm = symbol.rhythm
+            if rhythm == "newline":
+                time_pending = False
+                result.append(symbol)
+            elif rhythm.startswith("clef"):
+                name = _staff_name(symbol)
+                if clefs.get(name) != rhythm:
+                    clefs[name] = rhythm
+                    result.append(symbol)
+            elif rhythm.startswith("keySignature"):
+                if key != rhythm:
+                    key = rhythm
+                    result.append(symbol)
+            elif rhythm.startswith("timeSignature"):
+                if time != rhythm or not time_pending:
+                    result.append(symbol)
+                time, time_pending = rhythm, True
+            else:
+                if rhythm.startswith(("note", "rest")):
+                    time_pending = False
+                result.append(symbol)
+        result_chords.append(result)
+    return result_chords
+
+
+vocabulary._remove_redudant_clefs_keys_and_time_signatures = _preserve_system_time_signatures
 
 
 def _step(chord):
@@ -284,7 +361,7 @@ def _read_page(path):
 
 # The MusicXML schema fixes the order of children; homr writes some out of it (voice
 # after type, alter after octave, clef before key). Most programs don't mind, Finale
-# refuses the file. bench/validate.py checks the result against the schema.
+# refuses the file. Normalize child order before MIDI conversion.
 _CHILD_ORDER = {
     "note": "grace cue chord pitch unpitched rest duration tie instrument footnote level voice type dot "
             "accidental time-modification stem notehead notehead-text staff beam notations lyric play listen",

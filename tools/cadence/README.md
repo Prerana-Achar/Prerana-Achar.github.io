@@ -31,12 +31,14 @@ Only the browser PDF reader is included; no local launcher or server is needed.
 
 ## Verification and release gate
 
-**Not approved for production: full browser PDF recognition has not been verified
-in this environment.** No deployment or push was performed.
+**Recognition accuracy still needs review.** Four user PDFs were imported in
+the live browser, and the review found staff merging, missing meter changes and
+octave-clef errors. The corrections below have conversion-level checks; corrected
+PDF recognition must be rechecked in the browser after deployment.
 
-Browser PDF recognition, runtime/model downloads and recognition accuracy still
-need browser verification before production use. Review representative PDFs
-against their original scores before pushing.
+Before publishing, verify a corrected PDF import in the browser against its
+original score. Local conversion checks do not establish end-to-end recognition
+accuracy. Runtime and model downloads were exercised in the earlier live imports.
 
 ## Instrument sound and score layout
 
@@ -73,7 +75,7 @@ original spelling, articulation and page layout; rhythm remains quantized to
 sixteenths for display. Original performance timing is unchanged for grading.
 
 Actual audio quality and visual layout at desktop/mobile widths still need
-browser verification after changes. PDF recognition remains unverified here.
+browser verification after changes.
 
 ## Practice views
 
@@ -147,3 +149,36 @@ bar is used while the remaining work is unknown, rather than a misleading 0% for
 a one-page score. The modal shows elapsed time; its timer stops on completion,
 cancellation, reset or error. Downloads and completed-page counts use measured
 percentages. These indicators do not estimate time remaining.
+
+## Accuracy corrections
+
+PDF staves are exported to separate MIDI tracks so that the upper/pupil line can
+be selected independently of accompaniment. Their voices, chords, ties, leading
+rests and complete measure timelines are preserved. Generic PDF instrument tags
+are omitted from the part label; source instrument classification is not inferred
+from the recognizer's generic Piano/Voice labels.
+
+The recognizer encodes only the denominator of a time signature. Cleanup now
+keeps repeated-denominator signatures after music or at a new system, allowing
+the writer to infer each printed segment independently, including 4/4 to 3/4.
+
+Octave-clef correction now checks for 8 above as well as below. Corrected notes
+carry per-note pitch mode derived from MIDI text markers so selecting guitar does not shift an already
+corrected sounding pitch down a second octave. Plain clef changes reset the marker.
+The exact 103 KiB homr source archive is bundled to pin the patched interfaces;
+recognition models remain external.
+
+Checks use the deployed parser source, the 77-note pupil transcription, mixed
+4/4 and 3/4 passages, and the actual octave-above glyph rendered from Ave Maria.
+These checks establish conversion behavior, not perfect model recognition of
+every printed pitch or rhythm. Reimport PDFs after deploying these changes.
+
+## Production review
+
+Local checks cover JavaScript/Python syntax, referenced assets and element IDs,
+all bundled library MIDI files, instrument sample coverage, and inference tensor
+cleanup. Recognition releases temporary input/output tensors after every run and
+releases decoder caches when replaced. Worker termination frees the engine on
+completion, cancellation or failure. No test, demo, log or backup files are
+required in the published Cadence folder. Keep the bundled source archive, MIDI
+library, instrument samples and their license notices.

@@ -58,7 +58,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
   if(!pages.length)throw Error('The PDF pages rendered blank. The scanned images could not be read; try re-exporting the PDF.');
   await releasePdf();
   if(signal?.aborted)throw canceled();
-  worker=new Worker(new URL('vendor/browser-omr/omr.worker.js?v=20261125-5',base),{type:'module'});
+  worker=new Worker(new URL('vendor/browser-omr/omr.worker.js?v=20261125-7',base),{type:'module'});
   return await new Promise((resolve,reject)=>{
    const stop=()=>reject(canceled());
    signal?.addEventListener('abort',stop,{once:true});

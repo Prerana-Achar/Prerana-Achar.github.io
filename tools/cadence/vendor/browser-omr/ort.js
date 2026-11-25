@@ -1,6 +1,5 @@
 // The three recognition networks on onnxruntime-web, behind the two calls the Python side
-// needs (see py/ort_shim.py). Used inside the recognition worker where the browser has
-// WebAssembly JSPI, and in a worker of its own (ort.worker.js) where it has not.
+// needs (see py/ort_shim.py). Runs inside the recognition worker using WebAssembly JSPI.
 const ORT = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.1/dist/'
 const MODELS = ['segnet', 'encoder', 'decoder']
 
@@ -46,7 +45,7 @@ export async function load(base, onProgress) {
       const sum = (i) => Object.values(progress).reduce((s, p) => s + p[i], 0)
       onProgress(sum(0), sum(1))
     })
-    // WASM with threads; the WebGPU provider was tried and stalled while starting.
+    // Single-threaded WASM works without cross-origin isolation headers.
     sessions[name] = await ort.InferenceSession.create(bytes, { executionProviders: ['wasm'] })
   }))
 }
@@ -63,13 +62,33 @@ export const names = (path) => ({ inputs: session(path).inputNames, outputs: ses
  */
 export async function run(path, feeds, wanted) {
   const inputs = {}
-  for (const [name, feed] of Object.entries(feeds))
-    inputs[name] = feed.keep ? kept.get(`${path}/${feed.keep}`) : new ort.Tensor(feed.type, feed.data, feed.dims)
-  const results = await session(path).run(inputs)
-  const out = {}
-  for (const name of wanted) {
-    if (name.startsWith('cache_out')) kept.set(`${path}/${name}`, results[name])
-    else out[name] = { type: results[name].type, dims: results[name].dims, data: results[name].data }
+  const owned = []
+  let results
+  try {
+    for (const [name, feed] of Object.entries(feeds)) {
+      const tensor = feed.keep ? kept.get(`${path}/${feed.keep}`) : new ort.Tensor(feed.type, feed.data, feed.dims)
+      if (!tensor) throw new Error(`Missing recognition cache: ${feed.keep}`)
+      inputs[name] = tensor
+      if (!feed.keep) owned.push(tensor)
+    }
+    results = await session(path).run(inputs)
+    const out = {}
+    for (const name of wanted) {
+      const tensor = results[name]
+      if (name.startsWith('cache_out')) {
+        const key = `${path}/${name}`, previous = kept.get(key)
+        kept.set(key, tensor)
+        if (previous && previous !== tensor) previous.dispose()
+      } else {
+        // Python consumes this after run() returns, so copy before releasing ORT's tensor.
+        out[name] = { type: tensor.type, dims: [...tensor.dims], data: tensor.data.slice() }
+      }
+    }
+    return out
+  } finally {
+    for (const tensor of owned) tensor.dispose()
+    const retained = new Set(kept.values())
+    for (const tensor of new Set(Object.values(results || {})))
+      if (!retained.has(tensor)) tensor.dispose()
   }
-  return out
 }

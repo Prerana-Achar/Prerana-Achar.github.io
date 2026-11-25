@@ -25,7 +25,7 @@ function parseMidi(input){
  for(let ti=0;ti<trackCount;ti++){
   if(ascii(4)!=='MTrk')throw Error('A MIDI track header is missing.');
   const length=u32(),end=p+length;ensure(length);
-  let tick=0,running=0,name='',count=0;const program=new Array(16).fill(0),groups=new Map(),active=new Map();
+  let tick=0,running=0,name='',count=0,pdfConcertPitch=false;const program=new Array(16).fill(0),groups=new Map(),active=new Map();
   const groupFor=(channel,pr)=>{const key=channel+'-'+pr;if(!groups.has(key))groups.set(key,{id:`t${ti}-c${channel}-p${pr}`,track:ti,channel,program:pr,notes:[]});return groups.get(key)};
   const finish=(channel,midi)=>{const key=channel+'-'+midi,queue=active.get(key);if(!queue?.length)return;const n=queue.shift();n.endTick=Math.max(n.tick+1,tick);if(n.velocity>0){n.part.notes.push(n);totalNotes++;}if(!queue.length)active.delete(key)};
   while(p<end){
@@ -35,6 +35,7 @@ function parseMidi(input){
    else if(status<240)running=status;
    if(status===255){const type=u8(),size=vlq();ensure(size);if(p+size>end)throw Error('Invalid MIDI meta event.');
     const data=bytes.subarray(p,p+size);p+=size;
+    if(type===1){const text=new TextDecoder().decode(data);if(text==='Cadence:pdf-pitch=concert')pdfConcertPitch=true;else if(text==='Cadence:pdf-pitch=written')pdfConcertPitch=false}
     if(type===3)name=new TextDecoder().decode(data).replace(/[\x00-\x1f]/g,'').slice(0,100);
     if(type===81&&size===3){const us=data[0]*65536+data[1]*256+data[2];if(us>0)tempos.push({tick,us});}
     if(type===88&&size>=2){const n=data[0],d=2**data[1];if(n>0&&n<=32&&d<=32)meters.push({tick,n,d});}
@@ -42,7 +43,7 @@ function parseMidi(input){
    }else if(status===240||status===247){const size=vlq();ensure(size);if(p+size>end)throw Error('Invalid system-exclusive event.');p+=size;running=0;}
    else if(status<240){const kind=status>>4,channel=status&15,a=u8();let b=0;if(kind!==12&&kind!==13)b=u8();if(a>127||b>127)throw Error('Invalid MIDI channel event.');
     if(kind===12)program[channel]=a;
-    if(kind===9&&b>0){const part=groupFor(channel,program[channel]),key=channel+'-'+a;if(!active.has(key))active.set(key,[]);active.get(key).push({tick,midi:a,velocity:b/127,part});}
+    if(kind===9&&b>0){const part=groupFor(channel,program[channel]),key=channel+'-'+a;if(!active.has(key))active.set(key,[]);active.get(key).push({tick,midi:a,velocity:b/127,part,pdfConcertPitch});}
     if(kind===8||(kind===9&&b===0))finish(channel,a);
    }else throw Error('Unsupported MIDI system event.');
    if(p>end)throw Error('A MIDI event extends beyond its track.');
