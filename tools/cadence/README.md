@@ -51,9 +51,10 @@ own URL. It makes no requests to an external instrument-sample host and executes
 no downloaded JavaScript. Keep vendor/soundfonts/ in the GitHub Pages publish.
 
 Four notes load concurrently and decoded samples stay cached for the session.
-A missing or damaged note can use the nearest successfully decoded sample within
-one octave, retuned to the target pitch. Other unavailable notes retain the
-synthesized fallback individually. Out-of-bank pitches reuse A0 or C8 with the
+Only the four bundled instruments are supported; synthesized backup instruments
+and remote sample-host retries have been removed. Missing samples show a loading
+error instead of substituting another sound. Practice without Automatic playback
+does not load instrument audio. Out-of-bank pitches reuse A0 or C8 with the
 playback rate adjusted. Cancellation aborts in-flight loading. Long held notes
 may decay when their recorded sample ends.
 
@@ -71,10 +72,8 @@ Cadence's existing renderer, not an embedded MuseScore engine. MIDI still lacks
 original spelling, articulation and page layout; rhythm remains quantized to
 sixteenths for display. Original performance timing is unchanged for grading.
 
-Real audio quality, remote sample loading and visual layout at desktop/mobile
-widths still need browser verification. Local HTTP hosting and file previews
-were blocked in this environment; outbound sample downloads could not resolve.
-No push or deployment was performed.
+Actual audio quality and visual layout at desktop/mobile widths still need
+browser verification after changes. PDF recognition remains unverified here.
 
 ## Practice views
 
@@ -113,8 +112,8 @@ Fingering references:
 - Flute primary fingerings: https://www.wfg.woodwind.org/flute/fl_bas_1.html
   (plus fl_bas_2.html and fl_bas_3.html for the upper octaves).
 
-Cadence opens without a sample score. Upload a PDF or MIDI to enable preview
-and practice. No demo download, simulated take or bundled demo MIDI is included.
+Cadence opens without a selected song. Choose a library piece or import a PDF
+or MIDI to enable preview and practice. No simulated take is included.
 
 The Song position slider works in both views. Dragging during preview stops the
 old scheduled notes and continues from the chosen time on release. During live

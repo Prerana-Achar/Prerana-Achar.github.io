@@ -1,7 +1,4 @@
 node_modules/
 .DS_Store
 *.log
-.omr-venv/
-.omr-cache/
-.omr-installed.txt
 __pycache__/
