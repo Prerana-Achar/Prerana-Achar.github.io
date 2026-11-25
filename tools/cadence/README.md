@@ -73,3 +73,19 @@ Real audio quality, remote sample loading and visual layout at desktop/mobile
 widths still need browser verification. Local HTTP hosting and file previews
 were blocked in this environment; outbound sample downloads could not resolve.
 No push or deployment was performed.
+
+## Practice views
+
+Instrument is the default view. The header toggle switches between Instrument
+and Music sheet without changing the session, audio, timing or selected range.
+Instrument follows one target note at a time during preview and live practice;
+Previous/Next can browse individual notes when stopped or paused. Measures per
+page and Follow the score apply only to Music sheet and keep their saved values
+when switching views. Start measure and Practice measures apply to both views.
+
+The instrument guide shows piano keys and one standard-tuning string position
+for guitar, bass, violin or cello. Bowed strings use semitone guides, not frets
+or a fingering recommendation. Out-of-range string notes are identified rather
+than assigned an incorrect position. Wind, brass and voice illustrations label
+the target pitch; they do not supply fingering charts. Written pitch is labeled
+for transposing instruments while audio and pitch checking stay at concert pitch.

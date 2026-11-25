@@ -15,3 +15,50 @@
 
 /* Compact practice controls. */
 .setup{display:flex;flex-direction:column;gap:14px;padding:18px}.setup .panel-title{margin:0}.setup .control-group{margin:0}.setup .control-group>label,.setup .label-row label{font-size:13px;margin-bottom:6px}.setup .upload-zone{padding:14px 8px}.setup .upload-zone svg{width:23px;height:23px;margin-bottom:7px}.setup .upload-zone strong{margin-bottom:4px}.setup .upload-zone small{margin-top:6px}.setup select{min-height:36px;padding-top:8px;padding-bottom:8px;font-size:13px}.setup .field-help{font-size:11px;line-height:1.4;margin-top:5px}.setup .practice-mode{padding:10px 12px}.setup .practice-mode .check-line{font-size:14px}.setup .practice-mode input{width:15px;height:15px}.setup .fine-tune{margin:0;padding-top:12px}.setup .fine-tune label{margin:12px 0 6px}.setup .fine-tune .check-line{margin-bottom:0}.measure-settings{display:grid;grid-template-columns:1fr 1fr;gap:12px}.measure-settings .control-group>label{min-height:32px}.setup #measure-count,.setup #measures-per-page{width:100%;min-height:36px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);font:inherit;font-size:14px}.setup .label-row{gap:8px}.setup .label-row output{font-size:12px}.setup input[type=range]{margin:6px 0 0}
+
+/* Default dark theme, independent of the system appearance. */
+:root{color-scheme:dark;--ink:#eeeaf7;--muted:#b2a9c4;--purple:#b69aff;--purple-dark:#c9b4ff;--purple-light:#302540;--line:#393246;--bg:#111018;--green:#70d8aa;--red:#ff8e9d;--blue:#b69aff;--surface:#1b1925;--surface-raised:#252131}
+body{background:var(--bg);color:var(--ink)}
+.site-header,.setup,.score-panel,.score-paper,.input-panel,.review-panel,dialog{background:var(--surface)}
+.upload-zone{background:#221d30;border-color:#66517f}.upload-zone:hover,.upload-zone.dragging{background:#302540}
+select,.icon-button,.demo-button,.setup #measure-count,.setup #measures-per-page,#measure-count{background:var(--surface-raised);color:var(--ink);border-color:var(--line)}
+select option{background:var(--surface-raised);color:var(--ink)}.select-wrap:after{border-color:var(--muted)}
+.button.primary{background:#7553bd;color:#fff;box-shadow:0 3px 12px #0003}.button.primary:hover{background:#8562cd}
+.button.secondary{background:var(--surface-raised);border-color:var(--line);color:var(--ink)}.button.secondary:hover{background:#342b45}
+.brand-mark{background:#7553bd}.brand-mark i{background:#fff}
+.score-meta,.transport,.summary-panel,.single-note-note{background:var(--surface-raised)}
+.feedback-panel{background:linear-gradient(135deg,var(--surface),#231c30)}
+.practice-mode{background:#282035;border-color:#66517f}.practice-mode input{accent-color:var(--purple)}
+.score-panel{box-shadow:0 4px 20px #0002}.fine-tune,.mic-actions,.stat,.review-panel li button,.mic-state{border-color:var(--line)}
+.small-label,.intro-aside>span:last-child,.upload-zone small,.demo-link-row,.field-help,.range-labels,.fine-tune summary,.single-note-note small,.file-badge,.score-heading p,.score-meta,.paper-heading,.score-navigation,.time-display>span,.section-label>span,.pitch-display>div>span,.mic-actions>span,.feedback-panel p,.summary-panel>div:first-child>strong,.stat>span,.app-status,footer,.footer-brand,.score-toolbar label{color:var(--muted)}
+.stat>strong{color:var(--ink)}.correct-stat>strong{color:var(--green)}.wrong-stat>strong{color:var(--red)}
+.score-meta>span:not(:first-child):not(.legend):before{color:#685e79}
+#score{color:var(--ink)}#score svg path{fill:currentColor}
+.progress-track,.level-track,.beat-indicator i{background:#393246}.beat-indicator i.active{background:var(--purple);box-shadow:0 0 0 4px #b69aff20}
+.tuner{color:var(--muted)}.tuner>div{background:linear-gradient(90deg,#3b2d47,#244738 45%,#244738 55%,#3b2d47)}.tuner b{background:#6d9f85}
+.mic-state.on{background:#193b2e;border-color:#34654e}.feedback-panel.good .feedback-icon{background:#193b2e}.feedback-panel.bad .feedback-icon{background:#482632}
+.feedback-icon,.review-panel summary:before,.demo-button,.single-note-note>span{color:var(--purple)}
+.review-panel summary>span:last-child,.review-panel li button{color:#e3afbd}.review-panel li button:hover{color:var(--red)}
+.session-banner{background:#3a2d1e;color:#f1cf91;border-color:#665036}.count-in{background:#1b1925ed}.count-in>span,.count-in>small{color:var(--muted)}
+dialog{box-shadow:0 20px 100px #0008}dialog::backdrop{background:#08060db3}.help-note{color:#d7c6f3}
+button:disabled{opacity:.55}input[type=range],.check-line input{accent-color:var(--purple)}
+
+/* Single-note instrument view. */
+.view-toggle{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:8px;background:var(--bg);margin-left:auto}
+.view-toggle button{border:0;border-radius:5px;padding:6px 10px;background:transparent;color:var(--muted);font-size:12px;font-weight:600;white-space:nowrap}
+.view-toggle button[aria-pressed=true]{background:var(--purple-light);color:var(--ink)}
+.score-meta{align-items:center}.score-meta>span:before{display:none}.score-meta>span{white-space:nowrap}
+.instrument-view{--note-color:var(--purple);padding:12px 0 8px;text-align:center;min-height:290px}
+.instrument-note-heading{display:flex;flex-direction:column;align-items:center;gap:5px}.instrument-note-heading strong{font:650 54px 'Manrope',sans-serif;letter-spacing:-2px;line-height:1.2;color:var(--note-color)}
+.instrument-note-heading>span:last-child{font-size:12px;color:var(--muted);min-height:18px}
+.instrument-diagram{width:100%;max-width:860px;margin:4px auto 0;overflow:hidden}.instrument-diagram svg{display:block;width:100%;height:auto;min-height:120px;fill:none;stroke:none}
+.instrument-diagram text{font-family:'DM Sans',sans-serif;text-anchor:middle;stroke:none}.instrument-diagram .piano-white{fill:#eeeaf7;stroke:#111018;stroke-width:1}.instrument-diagram .piano-black{fill:#17141f;stroke:#5a5067;stroke-width:1}
+.instrument-diagram .target-key{fill:var(--note-color)}.instrument-diagram .key-label{fill:#4a4156;font-size:11px}
+.instrument-diagram .fingerboard{fill:#30263a;stroke:#5a496b;stroke-width:2}.instrument-diagram .instrument-string{stroke:#c5b8d2;stroke-width:2}.instrument-diagram .fret{stroke:#82718f;stroke-width:2}.instrument-diagram .position-guide{stroke:#82718f;stroke-width:1;stroke-dasharray:3 5}
+.instrument-diagram .diagram-label{fill:var(--muted);font-size:13px}.instrument-diagram .target-position{fill:var(--note-color);stroke:#111018;stroke-width:3}
+.instrument-diagram .instrument-body{fill:#30263a;stroke:#b5a3c9;stroke-width:3}.instrument-diagram .instrument-detail{fill:#51435e;stroke:#b5a3c9;stroke-width:3}.instrument-diagram .pitch-badge rect{fill:var(--note-color)}.instrument-diagram .pitch-badge text{fill:#111018;font-size:23px;font-weight:700}
+.instrument-view[data-state=correct]{--note-color:var(--green)}.instrument-view[data-state=wrong]{--note-color:var(--red)}.instrument-view[data-state=rest] .instrument-diagram{opacity:.4}
+.instrument-view .field-help{color:var(--muted);min-height:18px;margin:0}
+@media(max-width:760px){.score-meta{gap:10px 16px}.view-toggle{margin-left:0}.instrument-view{min-height:250px}.instrument-note-heading strong{font-size:46px}.instrument-diagram .diagram-label{font-size:15px}}
+
+.instrument-diagram .target-key,.instrument-diagram .target-position,.instrument-diagram .pitch-badge{animation:note-attack .16s ease-out}@keyframes note-attack{from{opacity:.45}to{opacity:1}}@media(prefers-reduced-motion:reduce){.instrument-diagram *{animation:none!important}}

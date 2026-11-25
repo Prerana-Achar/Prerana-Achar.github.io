@@ -7,15 +7,26 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
  if(file.size>20*1024*1024)throw Error('Choose a PDF smaller than 20 MB.');
  if(signal?.aborted)throw canceled();
  if(typeof WebAssembly.Suspending!=='function')throw Error('PDF recognition needs a current Chrome, Edge or Firefox with WebAssembly JSPI support. Update your browser and try again. MIDI import works in other browsers.');
- let worker,loading,documentPdf,render;
- const abort=()=>{render?.cancel();loading?.destroy();worker?.terminate()};
+ let worker,loading,documentPdf,render,pdfCleanup;
+ // The loading task owns PDF.js resources. Newer document proxies don't have
+ // destroy(). Share cleanup between cancellation, normal completion and finally.
+ const releasePdf=()=>{
+  if(!pdfCleanup&&loading){
+   const task=loading;loading=null;documentPdf=null;
+   pdfCleanup=Promise.resolve().then(()=>task.destroy()).catch(()=>{});
+  }
+  return pdfCleanup||Promise.resolve();
+ };
+ const abort=()=>{try{render?.cancel()}finally{void releasePdf();worker?.terminate()}};
  signal?.addEventListener('abort',abort,{once:true});
  try{
   onProgress('Loading PDF tools…');
   const pdfjs=await import(PDFJS+'pdf.min.mjs');
   if(signal?.aborted)throw canceled();
   pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';
-  loading=pdfjs.getDocument({data:await file.arrayBuffer(),isEvalSupported:false});
+  const data=await file.arrayBuffer();
+  if(signal?.aborted)throw canceled();
+  loading=pdfjs.getDocument({data,isEvalSupported:false});
   documentPdf=await loading.promise;
   if(documentPdf.numPages<1||documentPdf.numPages>12)throw Error('Choose a PDF with 1–12 pages, or split a longer score first.');
   const pages=[];
@@ -33,7 +44,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
     pages.push(await blob.arrayBuffer());
    }finally{render=null;canvas.width=canvas.height=0;page.cleanup()}
   }
-  await documentPdf.destroy();documentPdf=null;loading=null;
+  await releasePdf();
   if(signal?.aborted)throw canceled();
   worker=new Worker(new URL('vendor/browser-omr/omr.worker.js',base),{type:'module'});
   return await new Promise((resolve,reject)=>{
@@ -56,7 +67,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
   if(signal?.aborted)throw canceled();
   if(error.name==='PasswordException')throw Error('This PDF is password-protected. Export an unlocked copy first.');
   throw error;
- }finally{signal?.removeEventListener('abort',abort);worker?.terminate();if(documentPdf)await documentPdf.destroy();else loading?.destroy()}
+ }finally{signal?.removeEventListener('abort',abort);worker?.terminate();await releasePdf()}
 }
 root.CadencePdf={recognizePdf};
 })(window);
