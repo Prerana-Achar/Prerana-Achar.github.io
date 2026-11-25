@@ -78,25 +78,38 @@ function practiceLine(part,direction='top'){
 }
 function makeNotation(song,notes,barStart=0,barCount=4,instrument=instruments.piano){
  const bars=song.bars.slice(barStart,barStart+barCount);if(!bars.length)return {abc:'X:1\nL:1/16\nK:C\nz16 |]',map:[]};
- let abc=`X:1\nM:${bars[0].n}/${bars[0].d}\nL:1/16\nK:C clef=${instrument.clef}\n`,map=[];
+ let abc='X:1\nM:'+bars[0].n+'/'+bars[0].d+'\nL:1/16\nK:C clef='+instrument.clef+'\n',map=[];
  const accidentals=new Map();
- const pitch=m=>{const names=['C','^C','D','^D','E','F','^F','G','^G','A','^A','B'],name=names[((m%12)+12)%12],sharp=name.startsWith('^'),letter=name.at(-1),oct=Math.floor(m/12)-1,key=letter+oct;let text=(sharp?'^':accidentals.get(key)?'=':'')+letter;accidentals.set(key,sharp);if(oct>=5)text=text.toLowerCase()+"'".repeat(oct-5);else text+=','.repeat(Math.max(0,4-oct));return text};
+ const pitch=m=>{const names=['C','^C','D','^D','E','F','^F','G','^G','A','^A','B'],name=names[((m%12)+12)%12],sharp=name.startsWith('^'),letter=name.at(-1),oct=Math.floor(m/12)-1,key=letter+oct,wasSharp=accidentals.get(key)||false;let text=(sharp&&!wasSharp?'^':!sharp&&wasSharp?'=':'')+letter;accidentals.set(key,sharp);if(oct>=5)text=text.toLowerCase()+"'".repeat(oct-5);else text+=','.repeat(Math.max(0,4-oct));return text};
  bars.forEach((bar,bi)=>{
   accidentals.clear();
-  if(bi&& (bar.n!==bars[bi-1].n||bar.d!==bars[bi-1].d))abc+=`[M:${bar.n}/${bar.d}] `;
-  const units=Math.max(1,Math.round((bar.end-bar.start)/song.ppq*4));let cursor=0,previous=null;
-  // Whitespace in ABC separates beams. Keep groups inside the metrical beat.
-  const beatUnits=16/bar.d*(bar.d===8&&bar.n%3===0?3:1);
+  if(bi&&(bar.n!==bars[bi-1].n||bar.d!==bars[bi-1].d))abc+='[M:'+bar.n+'/'+bar.d+'] ';
+  const units=Math.max(1,Math.round((bar.end-bar.start)/song.ppq*4)),compound=bar.d===8&&bar.n%3===0&&bar.n>3;
+  const beatUnits=16/bar.d*(compound?3:1);
   const groupAt=unit=>bar.d===8&&[5,7].includes(bar.n)?(unit<(bar.n-3)*2?Math.floor(unit/4):(bar.n-3)/2):Math.floor(unit/beatUnits);
+  let cursor=0,previous=null;
+  // Decompose irregular MIDI durations into readable notes and ties. Keep
+  // off-beat notes and rests from hiding the next beat; do not alter grading.
+  const write=(start,end,n)=>{
+   if(!n&&start===0&&end===units&&units===bar.n*16/bar.d){abc+='Z ';previous=null;return}
+   for(let at=start;at<end;){
+    const remaining=end-at,boundary=(Math.floor(at/beatUnits)+1)*beatUnits;
+    const limit=!n||at%beatUnits!==0?Math.min(remaining,boundary-at):remaining;
+    const length=[16,12,8,6,4,3,2,1].find(d=>d<=limit&&(at%(2**Math.floor(Math.log2(d)))===0||(compound&&at%beatUnits===0&&d===beatUnits)))||1;
+    const next=at+length,group=groupAt(at),short=!!n&&length<4&&group===groupAt(next-1);
+    if(previous?.short&&short&&previous.end===at&&previous.group===group)abc=abc.slice(0,-1);
+    if(n)map.push({id:n.id,char:abc.length,bar:bar.index});
+    abc+=(n?pitch(n.midi+instrument.transpose):'z')+(length===1?'':length)+(n&&(next<end||n.endTick>bar.end)?'-':'')+' ';
+    previous={end:next,group,short};at=next;
+   }
+  };
   for(const n of notes.filter(n=>n.tick<bar.end&&n.endTick>bar.start)){
    const start=Math.max(cursor,Math.round((Math.max(bar.start,n.tick)-bar.start)/song.ppq*4));if(start>=units)continue;
-   if(start>cursor)abc+='z'+(start-cursor)+' ';
-   const end=Math.min(units,Math.max(start+1,Math.round((Math.min(bar.end,n.endTick)-bar.start)/song.ppq*4))),length=end-start;
-   const group=groupAt(start),short=length<4&&group===groupAt(end-1);
-   if(previous?.short&&short&&previous.end===start&&previous.group===group)abc=abc.slice(0,-1);
-   map.push({id:n.id,char:abc.length,bar:bar.index});abc+=pitch(n.midi+instrument.transpose)+(length===1?'':length)+(n.endTick>bar.end?'-':'')+' ';cursor=end;previous={end,group,short};
+   if(start>cursor)write(cursor,start,null);
+   const end=Math.min(units,Math.max(start+1,Math.round((Math.min(bar.end,n.endTick)-bar.start)/song.ppq*4)));
+   write(start,end,n);cursor=end;
   }
-  if(cursor<units)abc+='z'+(units-cursor)+' ';abc+=(bi===bars.length-1?'|]':'| ');
+  if(cursor<units)write(cursor,units,null);abc+=(bi===bars.length-1?'|]':'| ');
  });return {abc,map};
 }
 function detectPitch(input,sampleRate,{min=55,max=2000,gate=.008}={}){

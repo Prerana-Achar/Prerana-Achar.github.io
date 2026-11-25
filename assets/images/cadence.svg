@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+  <rect width="600" height="450" fill="#f1edfc"/>
+  <rect x="62" y="60" width="476" height="330" rx="24" fill="#fff"/>
+  <text x="300" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-2" fill="#6042bd">cadence.</text>
+  <g stroke="#ded8eb" stroke-width="2">
+    <path d="M120 220H480M120 240H480M120 260H480M120 280H480M120 300H480"/>
+  </g>
+  <g fill="#7657d8" stroke="#7657d8" stroke-width="4">
+    <ellipse cx="185" cy="280" rx="13" ry="9" transform="rotate(-20 185 280)"/>
+    <path d="M197 277V210"/>
+    <ellipse cx="290" cy="260" rx="13" ry="9" transform="rotate(-20 290 260)"/>
+    <path d="M302 257V190"/>
+    <ellipse cx="395" cy="240" rx="13" ry="9" transform="rotate(-20 395 240)"/>
+    <path d="M407 237V170"/>
+  </g>
+  <text x="300" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#777486">Progress, one phrase at a time.</text>
+</svg>
