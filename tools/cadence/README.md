@@ -27,8 +27,7 @@ score; Reset cancels the import and terminates its worker. Review detected notes
 before practicing. Repeats are practiced as printed rather than unfolded; grace
 notes are omitted. Drum notation and tablature are unsupported.
 
-The old Windows launcher and recognizer/server.py are retained as legacy tools;
-the website no longer uses them.
+Only the browser PDF reader is included; no local launcher or server is needed.
 
 ## Verification and release gate
 
@@ -42,9 +41,7 @@ against their original scores before pushing.
 ## Instrument sound and score layout
 
 Your instrument now chooses the sound for both Hear this part and Automatic
-playback after a mistake. Piano, nylon guitar, violin, cello, flute, clarinet,
-trumpet, alto saxophone and finger bass use the corresponding FluidR3 GM samples;
-Voice / other uses choir aahs. Playback stays at concert pitch, including for
+playback after a mistake. Piano, nylon guitar, violin and flute use their corresponding FluidR3 GM samples. Playback stays at concert pitch, including for
 transposing instruments. Metronome clicks keep their separate simple tone.
 
 Instrument banks download on demand from
@@ -83,9 +80,33 @@ Previous/Next can browse individual notes when stopped or paused. Measures per
 page and Follow the score apply only to Music sheet and keep their saved values
 when switching views. Start measure and Practice measures apply to both views.
 
-The instrument guide shows piano keys and one standard-tuning string position
-for guitar, bass, violin or cello. Bowed strings use semitone guides, not frets
-or a fingering recommendation. Out-of-range string notes are identified rather
-than assigned an incorrect position. Wind, brass and voice illustrations label
-the target pitch; they do not supply fingering charts. Written pitch is labeled
-for transposing instruments while audio and pitch checking stay at concert pitch.
+Only Violin, Piano, Guitar and Flute are offered. All four drawings are original,
+horizontal SVGs with a fixed layout; only highlights and finger numbers change.
+No external visualization library or hosted iframe is loaded.
+
+Violin uses four first-position guides (1, high 2, 3 and 4). Low/high finger
+adjustments are labeled. Open strings are preferred where available; notes above
+the first-position range explicitly need a shift instead of a guessed marker.
+Guitar uses standard tuning and a numbered suggested finger in a four-fret hand
+position. Its fixed 12- or 24-fret display is chosen for the selected passage.
+Piano has a Left/Right hand selector. Suggested finger numbers are calculated
+across the passage using a small movement-cost search; they are practice aids,
+not editorial fingerings from the score. Flute shows primary Boehm C-foot
+fingerings for C4–C7, including thumb, G-sharp, foot and high-note trill keys.
+Alternate fingerings and other flute types are not represented.
+
+Design references (no source code or artwork copied):
+- Notae: https://memoriainfinita.github.io/notae/
+- Piano Chart: https://github.com/ailon/piano-chart
+- SVGuitar: https://github.com/omnibrain/svguitar
+- Fingering Components: https://github.com/pepperhorn/fingering-components
+
+Fingering references:
+- Yamaha violin: https://www.yamaha.com/en/musical_instrument_guide/violin/play/play003.html
+- Yamaha piano: https://hub.yamaha.com/keyboards/k-how-to/the-basics-of-piano-keyboard-fingering/
+- Guitar position reference: https://musescore.com/articles/materials/guitar/guitar-notes
+- Flute primary fingerings: https://www.wfg.woodwind.org/flute/fl_bas_1.html
+  (plus fl_bas_2.html and fl_bas_3.html for the upper octaves).
+
+Cadence opens without a sample score. Upload a PDF or MIDI to enable preview
+and practice. No demo download, simulated take or bundled demo MIDI is included.

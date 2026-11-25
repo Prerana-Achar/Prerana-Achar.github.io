@@ -57,8 +57,36 @@ button:disabled{opacity:.55}input[type=range],.check-line input{accent-color:var
 .instrument-diagram .fingerboard{fill:#30263a;stroke:#5a496b;stroke-width:2}.instrument-diagram .instrument-string{stroke:#c5b8d2;stroke-width:2}.instrument-diagram .fret{stroke:#82718f;stroke-width:2}.instrument-diagram .position-guide{stroke:#82718f;stroke-width:1;stroke-dasharray:3 5}
 .instrument-diagram .diagram-label{fill:var(--muted);font-size:13px}.instrument-diagram .target-position{fill:var(--note-color);stroke:#111018;stroke-width:3}
 .instrument-diagram .instrument-body{fill:#30263a;stroke:#b5a3c9;stroke-width:3}.instrument-diagram .instrument-detail{fill:#51435e;stroke:#b5a3c9;stroke-width:3}.instrument-diagram .pitch-badge rect{fill:var(--note-color)}.instrument-diagram .pitch-badge text{fill:#111018;font-size:23px;font-weight:700}
-.instrument-view[data-state=correct]{--note-color:var(--green)}.instrument-view[data-state=wrong]{--note-color:var(--red)}.instrument-view[data-state=rest] .instrument-diagram{opacity:.4}
+.instrument-view[data-state=correct]{--note-color:var(--green)}.instrument-view[data-state=wrong]{--note-color:var(--red)}
 .instrument-view .field-help{color:var(--muted);min-height:18px;margin:0}
 @media(max-width:760px){.score-meta{gap:10px 16px}.view-toggle{margin-left:0}.instrument-view{min-height:250px}.instrument-note-heading strong{font-size:46px}.instrument-diagram .diagram-label{font-size:15px}}
 
-.instrument-diagram .target-key,.instrument-diagram .target-position,.instrument-diagram .pitch-badge{animation:note-attack .16s ease-out}@keyframes note-attack{from{opacity:.45}to{opacity:1}}@media(prefers-reduced-motion:reduce){.instrument-diagram *{animation:none!important}}
+
+
+/* Keep the note label and instrument stationary as pitches change. */
+.instrument-note-heading strong{width:5ch;min-height:1.2em;font-variant-numeric:tabular-nums}.instrument-note-heading>span:last-child{height:18px;white-space:nowrap}.instrument-view .field-help{height:40px;min-height:40px;line-height:20px;overflow:auto}.instrument-diagram{aspect-ratio:720/230}.instrument-diagram svg{min-height:0}
+
+/* PDF recognition stays in a focused modal above the dimmed workspace. */
+.pdf-import-dialog{width:min(460px,calc(100vw - 36px));padding:30px;border-radius:18px;max-height:85vh;overflow:auto}
+.pdf-import-dialog::backdrop{background:#08060dc7;backdrop-filter:grayscale(.8) blur(4px)}
+.pdf-import-symbol{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--purple-light);color:var(--purple);font-size:26px;margin-bottom:20px}
+.pdf-import-dialog .eyebrow{font-size:10px;margin-bottom:8px}.pdf-import-dialog h2{font-size:28px;line-height:1.2;margin:0 0 8px}
+.pdf-import-dialog .pdf-import-filename{font-size:12px;color:var(--muted);overflow-wrap:anywhere;margin:0 0 22px}
+.pdf-import-dialog .pdf-import-steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0;margin:0 0 24px;counter-reset:pdf-step}
+.pdf-import-dialog .pdf-import-steps li{padding:8px 0 0;margin:0;text-align:center;font-size:11px;color:var(--muted);border-top:2px solid var(--line)}
+.pdf-import-dialog .pdf-import-steps li[data-state=current]{border-color:var(--purple);color:var(--ink);font-weight:650}.pdf-import-dialog .pdf-import-steps li[data-state=done]{border-color:var(--green)}
+#pdf-import-message{font-size:14px;line-height:1.65;min-height:46px;color:var(--ink);margin:0 0 12px;overflow-wrap:anywhere}
+#pdf-import-progress{display:block;width:100%;height:10px;accent-color:var(--purple);margin:0}
+.pdf-import-dialog .pdf-import-progress-label{font-size:12px;min-height:20px;color:var(--muted);margin:9px 0 14px}
+.pdf-import-dialog .field-help{font-size:12px;line-height:1.6;margin:0}.pdf-import-actions{display:flex;justify-content:flex-end;margin-top:24px}
+#pdf-import-error-details{font-size:12px;margin-top:18px;color:var(--muted)}#pdf-import-error-details summary{cursor:pointer}#pdf-import-error-text{white-space:pre-wrap;overflow-wrap:anywhere;max-height:160px;overflow:auto;background:var(--bg);padding:12px;border-radius:8px;font-size:11px;line-height:1.6}
+.pdf-import-dialog[data-state=error] .pdf-import-symbol{color:var(--red);background:#482632}
+@media(max-width:480px){.pdf-import-dialog{padding:24px}}
+
+/* Original horizontal instrument diagrams in Cadence's palette. */
+.instrument-view{position:relative;padding-top:42px}.instrument-hand{position:absolute;right:0;top:2px;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}.instrument-hand select{width:auto;min-height:30px;padding:5px 22px 5px 9px;font-size:12px}
+.instrument-diagram .instrument-frame{fill:#121019;stroke:#393246;stroke-width:1.5}.instrument-diagram .piano-white{fill:#ddd7e9;stroke:#111018;stroke-width:1}.instrument-diagram .piano-black{fill:#16121e;stroke:#6b5b7d;stroke-width:1}.instrument-diagram .target-key{fill:var(--note-color)}
+.instrument-diagram .piano-hand-marker circle{fill:#17121f;stroke:var(--note-color);stroke-width:1.5}.instrument-diagram .piano-hand-marker .finger-number{fill:#eeeaf7}.instrument-diagram .finger-number{font-size:15px;font-weight:700;fill:#17121f;text-anchor:middle}
+.instrument-diagram .violin-neck,.instrument-diagram .guitar-neck{fill:#241d2e;stroke:#51415f;stroke-width:1.5}.instrument-diagram .nut{stroke:#d1c5df;stroke-width:4}.instrument-diagram .instrument-string{stroke:#b7a6c9;stroke-width:1.5}.instrument-diagram .fret{stroke:#53455f;stroke-width:1}.instrument-diagram .finger-guide{stroke:#8e75ab;stroke-width:2;opacity:.65}.instrument-diagram .finger-guide-label{fill:#c6b4dc;font-size:15px;font-weight:600}.instrument-diagram .target-position{fill:var(--note-color);stroke:#17121f;stroke-width:2}
+.instrument-diagram .flute-tube{fill:#292231;stroke:#6f607e;stroke-width:1.5}.instrument-diagram .flute-mouth{fill:#42364e;stroke:#a08caf;stroke-width:1.5}.instrument-diagram .flute-hole{fill:#141019}.instrument-diagram .flute-rod{stroke:#756582;stroke-width:2}.instrument-diagram .flute-key circle,.instrument-diagram .flute-key rect{fill:#211a2a;stroke:#a590bc;stroke-width:2}.instrument-diagram .flute-key-label{fill:#d8cbe5;font-size:14px}.instrument-diagram .flute-key.is-pressed circle,.instrument-diagram .flute-key.is-pressed rect{fill:var(--note-color);stroke:var(--note-color)}.instrument-diagram .flute-key.is-pressed text{fill:#17121f;font-weight:700}.instrument-diagram .hand-label{fill:#b5a6c6;font-size:11px;letter-spacing:1.5px}.instrument-diagram .small-diagram-label{fill:var(--muted);font-size:11px}
+@media(max-width:480px){.instrument-diagram{width:calc(100% + 16px);margin-left:-8px}.instrument-diagram .diagram-label{font-size:14px}}

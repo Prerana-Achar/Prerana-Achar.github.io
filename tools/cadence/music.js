@@ -2,16 +2,10 @@
 'use strict';
 const programs=('Acoustic Grand Piano|Bright Piano|Electric Grand Piano|Honky-tonk Piano|Electric Piano 1|Electric Piano 2|Harpsichord|Clavinet|Celesta|Glockenspiel|Music Box|Vibraphone|Marimba|Xylophone|Tubular Bells|Dulcimer|Drawbar Organ|Percussive Organ|Rock Organ|Church Organ|Reed Organ|Accordion|Harmonica|Tango Accordion|Nylon Guitar|Steel Guitar|Jazz Guitar|Clean Guitar|Muted Guitar|Overdriven Guitar|Distortion Guitar|Guitar Harmonics|Acoustic Bass|Finger Bass|Pick Bass|Fretless Bass|Slap Bass 1|Slap Bass 2|Synth Bass 1|Synth Bass 2|Violin|Viola|Cello|Contrabass|Tremolo Strings|Pizzicato Strings|Orchestral Harp|Timpani|String Ensemble 1|String Ensemble 2|Synth Strings 1|Synth Strings 2|Choir Aahs|Voice Oohs|Synth Voice|Orchestra Hit|Trumpet|Trombone|Tuba|Muted Trumpet|French Horn|Brass Section|Synth Brass 1|Synth Brass 2|Soprano Sax|Alto Sax|Tenor Sax|Baritone Sax|Oboe|English Horn|Bassoon|Clarinet|Piccolo|Flute|Recorder|Pan Flute|Blown Bottle|Shakuhachi|Whistle|Ocarina|Square Lead|Saw Lead|Calliope Lead|Chiff Lead|Charang Lead|Voice Lead|Fifths Lead|Bass + Lead|New Age Pad|Warm Pad|Polysynth Pad|Choir Pad|Bowed Pad|Metallic Pad|Halo Pad|Sweep Pad|Rain|Soundtrack|Crystal|Atmosphere|Brightness|Goblins|Echoes|Sci-fi|Sitar|Banjo|Shamisen|Koto|Kalimba|Bagpipe|Fiddle|Shanai|Tinkle Bell|Agogo|Steel Drums|Woodblock|Taiko|Melodic Tom|Synth Drum|Reverse Cymbal|Fret Noise|Breath Noise|Seashore|Bird Tweet|Telephone|Helicopter|Applause|Gunshot').split('|');
 const instruments={
- piano:{name:'Piano / keyboard',clef:'treble',transpose:0,min:27.5,max:2000},
- guitar:{name:'Guitar',clef:'treble',transpose:12,min:65,max:1600},
  violin:{name:'Violin',clef:'treble',transpose:0,min:180,max:2400},
- cello:{name:'Cello',clef:'bass',transpose:0,min:55,max:1400},
- flute:{name:'Flute',clef:'treble',transpose:0,min:220,max:2400},
- clarinet:{name:'B♭ clarinet',clef:'treble',transpose:2,min:130,max:2000},
- trumpet:{name:'B♭ trumpet',clef:'treble',transpose:2,min:110,max:1600},
- alto:{name:'E♭ alto saxophone',clef:'treble',transpose:9,min:130,max:1400},
- bass:{name:'Bass guitar',clef:'bass',transpose:12,min:27.5,max:800},
- voice:{name:'Voice / other concert-pitch instrument',clef:'treble',transpose:0,min:55,max:2000}
+ piano:{name:'Piano',clef:'treble',transpose:0,min:27.5,max:2000},
+ guitar:{name:'Guitar',clef:'treble',transpose:12,min:65,max:1600},
+ flute:{name:'Flute',clef:'treble',transpose:0,min:220,max:2400}
 };
 const noteName=m=>['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][((m%12)+12)%12]+(Math.floor(m/12)-1);
 function parseMidi(input){
@@ -165,15 +159,6 @@ class WaitJudge{
  advance(){return []}
  summary(){return {correct:this.index,wrong:this.wrongAttempts,missed:0,judged:this.results.size,total:this.notes.length,extras:0,accuracy:this.attempts?Math.round(this.index/this.attempts*100):null}}
 }
-function demoMidi(){
- const vlq=value=>{let n=Math.round(value),a=[n&127];while(n>>=7)a.unshift((n&127)|128);return a},u32=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255],str=s=>[...s].map(c=>c.charCodeAt(0));
- const track=events=>{events.sort((a,b)=>a.tick-b.tick||a.order-b.order);let last=0,out=[];for(const e of events){out.push(...vlq(e.tick-last),...e.bytes);last=e.tick}out.push(0,255,47,0);return [...str('MTrk'),...u32(out.length),...out]};
- const melody=[64,64,65,67,67,65,64,62,60,60,62,64,64,62,62,null,64,64,65,67,67,65,64,62,60,60,62,64,62,60,60,null],lead=[{tick:0,order:-2,bytes:[255,3,6,...str('Melody')]},{tick:0,order:-1,bytes:[192,0]}],bass=[{tick:0,order:-2,bytes:[255,3,4,...str('Bass')]},{tick:0,order:-1,bytes:[193,32]}];
- melody.forEach((m,i)=>{if(m===null)return;const duration=(i===14||i===30)?900:420;lead.push({tick:i*480,order:1,bytes:[144,m,100]},{tick:i*480+duration,order:0,bytes:[128,m,0]})});
- for(let i=0;i<8;i++){const m=i%2?43:48;bass.push({tick:i*1920,order:1,bytes:[145,m,76]},{tick:i*1920+1800,order:0,bytes:[129,m,0]})}
- const conductor=track([{tick:0,order:0,bytes:[255,81,3,9,39,192]},{tick:0,order:1,bytes:[255,88,4,4,2,24,8]}]);
- return new Uint8Array([...str('MThd'),0,0,0,6,0,1,0,3,1,224,...conductor,...track(lead),...track(bass)]);
-}
-const api={parseMidi,practiceLine,makeNotation,detectPitch,AttackTracker,TempoEstimator,Judge,WaitJudge,noteName,programs,instruments,demoMidi};
+const api={parseMidi,practiceLine,makeNotation,detectPitch,AttackTracker,TempoEstimator,Judge,WaitJudge,noteName,programs,instruments};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CadenceMusic=api;
 })(typeof window!=='undefined'?window:globalThis);

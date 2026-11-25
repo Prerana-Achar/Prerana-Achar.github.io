@@ -20,7 +20,8 @@ self.onmessage=async({data})=>{
   py.FS.mkdirTree('/work');
   const paths=data.pages.map((bytes,i)=>{const path=`/work/p${i+1}.png`;py.FS.writeFile(path,new Uint8Array(bytes));return path});
   const scan=py.runPython('import pipeline; pipeline.scan');
-  const xml=await scan.callPromising(py.toPy(paths),(done,total)=>post('status',{text:`Reading page ${Math.min(done+1,total)} of ${total}…`}));
+  const xml=await scan.callPromising(py.toPy(paths),(done,total)=>post('status',{text:done===total?'Combining recognized pages…':`Reading page ${done+1} of ${total}…`,stage:'read',done,total}));
+  post('status',{text:'Preparing your practice score…',stage:'finish'});
   py.globals.set('recognized_xml',xml);
   const result=py.runPython('from midi import convert; convert(recognized_xml)');
   const midi=new Uint8Array(typeof result.toJs==='function'?result.toJs():result);

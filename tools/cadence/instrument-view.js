@@ -1,40 +1,131 @@
 (function(root){
 'use strict';
-const tuning={guitar:[40,45,50,55,59,64],bass:[28,33,38,43],violin:[55,62,69,76],cello:[36,43,50,57]};
+// Original SVG artwork. Fingering references are listed in README.md.
+const tuning={guitar:[40,45,50,55,59,64],violin:[55,62,69,76]};
 const name=m=>['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][((m%12)+12)%12]+(Math.floor(m/12)-1);
-const svg=(content,label)=>`<svg viewBox="0 0 720 230" role="img" aria-label="${label}">${content}</svg>`;
+const svg=(body,label)=>`<svg viewBox="0 0 720 230" role="img" aria-label="${label}">${body}</svg>`;
+const text=(x,y,label,cls='diagram-label')=>`<text x="${x}" y="${y}" class="${cls}">${label}</text>`;
 function stringPosition(key,midi){
- return (tuning[key]||[]).map((open,string)=>({string,open,fret:midi-open})).filter(p=>p.fret>=0&&p.fret<=24).sort((a,b)=>a.fret-b.fret||b.string-a.string)[0]||null;
-}
-function keyboard(midi){
- const start=Math.max(12,Math.min(96,Math.floor(midi/12)*12-12)),white=[],black=[];
- let count=0;
- for(let n=start;n<start+36;n++){
-  if([1,3,6,8,10].includes(n%12))black.push({midi:n,x:count*32+24});
-  else{white.push({midi:n,x:count*32+36});count++}
+ const max=key==='violin'?7:24;
+ const position=(tuning[key]||[]).map((open,string)=>({string,open,fret:midi-open})).filter(p=>p.fret>=0&&p.fret<=max).sort((a,b)=>a.fret-b.fret||b.string-a.string)[0];
+ if(!position)return null;
+ if(key==='violin'){
+  const fingers=[0,1,1,2,2,3,3,4],adjustment={1:'low',3:'low',6:'high'};
+  return {...position,finger:fingers[position.fret],adjustment:adjustment[position.fret]||''};
  }
- const key=(k,dark)=>`<rect class="${dark?'piano-black':'piano-white'} ${k.midi===midi?'target-key':''}" x="${k.x}" y="26" width="${dark?21:31}" height="${dark?104:170}" rx="4"/>${!dark&&k.midi%12===0?`<text x="${k.x+15}" y="180" class="key-label">${name(k.midi)}</text>`:''}`;
- return {markup:svg(white.map(k=>key(k,false)).join('')+black.map(k=>key(k,true)).join(''),'Keyboard; highlighted key '+name(midi)),detail:'Play the highlighted key'};
+ return {...position,finger:position.fret===0?0:1+(position.fret-1)%4,position:position.fret===0?1:1+Math.floor((position.fret-1)/4)*4};
 }
-function strings(key,midi){
- const position=stringPosition(key,midi),open=tuning[key],fretted=key==='guitar'||key==='bass',first=position&&position.fret>12?13:1,last=first+11,x=f=>90+(f-first+1)*48;
- let drawing='<rect class="fingerboard" x="64" y="32" width="620" height="156" rx="12"/>';
- for(let fret=first;fret<=last;fret++)drawing+=`<path class="${fretted?'fret':'position-guide'}" d="M${x(fret)} 34V186"/><text class="diagram-label" x="${x(fret)-24}" y="215">${fret}</text>`;
- open.forEach((pitch,i)=>{const y=52+(open.length-1-i)*23;drawing+=`<path class="instrument-string" d="M66 ${y}H682"/><text class="diagram-label" x="30" y="${y+5}">${name(pitch)}</text>`;if(position?.string===i)drawing+=`<circle class="target-position" cx="${position.fret===0?76:x(position.fret)-24}" cy="${y}" r="11"/>`});
- const detail=position?(position.fret===0?'Open '+name(position.open)+' string':name(position.open)+' string · '+(fretted?'fret ':'semitone +')+position.fret):'Outside the displayed standard-tuning range';
- return {markup:svg(drawing,detail),detail:detail+(fretted?'':' · semitone guides')};
+function pianoFingerings(notes,hand='right'){
+ if(!notes.length)return [];
+ const black=m=>[1,3,6,8,10].includes(m%12),direction=hand==='left'?-1:1;
+ const keyCost=(m,f)=>black(m)?f===1?3:f===5?1:0:0;
+ let costs=Array.from({length:5},(_,i)=>keyCost(notes[0].midi,i+1)+Math.abs(i-(hand==='left'?4:0))*.18),paths=[];
+ for(let i=1;i<notes.length;i++){
+  const delta=(notes[i].midi-notes[i-1].midi)*direction,distance=Math.abs(delta),row=[],next=[];
+  for(let f=1;f<=5;f++){
+   let best=Infinity,chosen=0;
+   for(let previous=1;previous<=5;previous++){
+    const step=f-previous;let cost;
+    if(!delta)cost=f===previous?0:8;
+    else if(!step)cost=6+distance*.3;
+    else if(step*delta>0)cost=Math.abs(distance-Math.abs(step)*2)*.35+Math.max(0,distance-Math.abs(step)*3-2)*2;
+    else if((delta>0&&f===1&&[3,4].includes(previous))||(delta<0&&previous===1&&[3,4].includes(f)))cost=1.4+Math.max(0,distance-3);
+    else cost=10+distance;
+    const total=costs[previous-1]+cost+keyCost(notes[i].midi,f);
+    if(total<best){best=total;chosen=previous-1}
+   }
+   next.push(best);row.push(chosen);
+  }
+  costs=next;paths.push(row);
+ }
+ let finger=costs.indexOf(Math.min(...costs));const result=new Array(notes.length);result[notes.length-1]=finger+1;
+ for(let i=paths.length-1;i>=0;i--){finger=paths[i][finger];result[i]=finger+1}
+ return result;
 }
-function pitchGuide(key,written){
- // Wind/brass illustrations are pitch guides, not unverified fingering charts.
- let body='';
- if(key==='flute')body='<rect class="instrument-body" x="85" y="100" width="550" height="28" rx="14"/>'+[180,230,280,330,380,430].map(x=>`<circle class="instrument-detail" cx="${x}" cy="114" r="9"/>`).join('');
- else if(key==='clarinet')body='<path class="instrument-body" d="M105 101H555L615 74V154L555 127H105Z"/>'+[190,245,300,355,410,465].map(x=>`<circle class="instrument-detail" cx="${x}" cy="114" r="7"/>`).join('');
- else if(key==='trumpet')body='<path class="instrument-body" d="M120 94H485L592 55V171L485 132H240Q180 132 180 169Q180 190 240 190H440V166H248Q220 166 220 157Q220 150 250 150H485V94Z"/>'+[290,335,380].map(x=>`<path class="instrument-detail" d="M${x} 91V65M${x-9} 65H${x+9}"/>`).join('');
- else if(key==='alto')body='<path class="instrument-body" d="M225 50H280L340 158Q370 215 432 170L480 100L525 125L477 193Q387 254 320 185L260 77H225Z"/>'+[290,310,330].map((x,i)=>`<circle class="instrument-detail" cx="${x}" cy="${95+i*30}" r="8"/>`).join('');
- else body='<rect class="instrument-body" x="314" y="56" width="92" height="100" rx="46"/><path class="instrument-detail" d="M292 121V138Q292 185 360 185Q428 185 428 138V121M360 185V213M332 213H388"/>';
- return {markup:svg(body+`<g class="pitch-badge"><rect x="310" y="4" width="100" height="42" rx="21"/><text x="360" y="32">${name(written)}</text></g>`,name(written)+' pitch guide'),detail:key==='voice'?'Target pitch':'Target pitch · fingering not shown'};
+function keyboardModel(midi,options={}){
+ const min=Number.isFinite(options.minMidi)?options.minMidi:midi,max=Number.isFinite(options.maxMidi)?options.maxMidi:midi;
+ const start=Math.max(0,Math.floor(min/12)*12),end=Math.min(128,Math.max(start+24,(Math.floor(max/12)+1)*12)),keys=[];
+ let count=0;
+ for(let n=start;n<end;n++){const black=[1,3,6,8,10].includes(n%12);keys.push({midi:n,black,index:count});if(!black)count++}
+ const width=640/count;return keys.map(k=>({...k,x:40+k.index*width-(k.black?width*.33:0),width:k.black?width*.66:width-1}));
 }
-function diagram(key,midi,transpose=0){return key==='piano'?keyboard(midi):tuning[key]?strings(key,midi):pitchGuide(key,midi+transpose)}
-const api={diagram,stringPosition};
+function keyboard(midi,options){
+ const keys=keyboardModel(midi,options),target=keys.find(k=>k.midi===midi),finger=options.finger||1;
+ const draw=k=>`<rect data-midi="${k.midi}" class="${k.black?'piano-black':'piano-white'} ${k.midi===midi?'target-key':''}" x="${k.x}" y="28" width="${k.width}" height="${k.black?104:164}" rx="4"/>`+(!k.black&&k.midi%12===0?text(k.x+k.width/2,179,name(k.midi),'key-label'):'');
+ const marker=target?`<g class="piano-hand-marker" transform="translate(${target.x+target.width/2} ${target.black?90:148})"><circle r="12"/>${text(0,5,finger,'finger-number')}</g>`:'';
+ return {markup:svg(`<rect class="instrument-frame" x="28" y="16" width="664" height="188" rx="14"/>`+keys.filter(k=>!k.black).map(draw).join('')+keys.filter(k=>k.black).map(draw).join('')+marker,'Piano key '+name(midi)),detail:(options.hand==='left'?'Left':'Right')+' hand · suggested finger '+finger};
+}
+const violinX=offset=>offset===0?103:142+490*(1-2**(-offset/12))/(1-2**(-7/12));
+function marker(position,x,y){return `<g class="string-marker" transform="translate(${x} ${y})" visibility="${position?'visible':'hidden'}"><circle class="target-position" r="13"/>${text(0,5,position?.finger??'','finger-number')}</g>`}
+function violin(midi){
+ const position=stringPosition('violin',midi);
+ let body='<path class="violin-neck" d="M133 47L662 36V194L133 183Z"/><path class="nut" d="M136 46V184"/>';
+ // Four familiar first-position tape guides: 1, high 2, 3 and 4.
+ [2,4,5,7].forEach((offset,i)=>{body+=`<path class="finger-guide" d="M${violinX(offset)} 40V190"/>`+text(violinX(offset),22,i+1,'finger-guide-label')});
+ tuning.violin.forEach((m,i)=>{const y=66+(3-i)*32;body+=`<path class="instrument-string" d="M86 ${y}H668"/>`+text(58,y+5,name(m))});
+ body+=marker(position,position?violinX(position.fret):0,position?66+(3-position.string)*32:0);
+ const detail=!position?'Shift needed · outside the first-position guide':position.finger===0?'Open '+name(position.open)+' string':name(position.open)+' string · finger '+position.finger+(position.adjustment?' '+position.adjustment:'')+' · first position';
+ return {markup:svg(body,detail),detail};
+}
+function guitar(midi,options){
+ const position=stringPosition('guitar',midi),frets=options.guitarFrets||12,spacing=540/frets,x=f=>126+(f-.5)*spacing;
+ let body='<rect class="guitar-neck" x="124" y="40" width="548" height="153" rx="8"/><path class="nut" d="M124 40V193"/>';
+ for(let f=1;f<=frets;f++){
+  body+=`<path class="fret" d="M${126+f*spacing} 42V191"/>`;
+  if([3,5,7,9,12,15,17,19,21,24].includes(f))body+=text(x(f),218,f);
+ }
+ tuning.guitar.forEach((m,i)=>{const y=54+(5-i)*25;body+=`<path class="instrument-string" style="stroke-width:${1+i*.15}" d="M88 ${y}H674"/>`+text(58,y+5,name(m))});
+ body+=marker(position,position?(position.fret===0?103:x(position.fret)):0,position?54+(5-position.string)*25:0);
+ const detail=!position?'Outside standard guitar range':position.fret===0?'String '+(6-position.string)+' · open '+name(position.open):'String '+(6-position.string)+' · fret '+position.fret+' · suggested finger '+position.finger;
+ return {markup:svg(body,detail),detail};
+}
+// Standard Boehm flute with a C foot. Primary fingerings, C4–C7.
+// Key IDs describe physical finger touches, not every mechanically linked pad.
+const fluteKeys=[
+ ['l1',190,100,'1'],['l2',250,100,'2'],['l3',310,100,'3'],
+ ['r1',420,100,'1'],['r2',480,100,'2'],['r3',540,100,'3'],
+ ['t',205,162,'B'],['gs',342,162,'G♯'],['eb',566,162,'E♭'],['cs',620,162,'C♯'],['c',674,162,'C'],
+ ['td',395,48,'D'],['te',455,48,'D♯']
+];
+const flutePatterns={
+ 60:'t l1 l2 l3 r1 r2 r3 cs c',61:'t l1 l2 l3 r1 r2 r3 cs',62:'t l1 l2 l3 r1 r2 r3',63:'t l1 l2 l3 r1 r2 r3 eb',
+ 64:'t l1 l2 l3 r1 r2 eb',65:'t l1 l2 l3 r1 eb',66:'t l1 l2 l3 r3 eb',67:'t l1 l2 l3 eb',68:'t l1 l2 l3 gs eb',69:'t l1 l2 eb',70:'t l1 r1 eb',71:'t l1 eb',72:'l1 eb',73:'eb',
+ 74:'t l2 l3 r1 r2 r3',75:'t l2 l3 r1 r2 r3 eb',76:'t l1 l2 l3 r1 r2 eb',77:'t l1 l2 l3 r1 eb',78:'t l1 l2 l3 r3 eb',79:'t l1 l2 l3 eb',80:'t l1 l2 l3 gs eb',81:'t l1 l2 eb',82:'t l1 r1 eb',83:'t l1 eb',84:'l1 eb',85:'eb',
+ 86:'t l2 l3 eb',87:'t l1 l2 l3 gs r1 r2 r3 eb',88:'t l1 l2 r1 r2 eb',89:'t l1 l3 r1 eb',90:'t l1 l3 r3 eb',91:'l1 l2 l3 eb',92:'l2 l3 gs eb',93:'t l2 r1 eb',94:'t r1 td',95:'t l1 l3 te',96:'l1 l2 l3 gs r1'
+};
+function fluteFingering(midi){const pattern=flutePatterns[midi];return pattern===undefined?null:pattern.split(' ')}
+function flute(midi){
+ const pressed=fluteFingering(midi),down=new Set(pressed||[]);
+ let body='<rect class="flute-tube" x="38" y="85" width="660" height="31" rx="15"/><ellipse class="flute-mouth" cx="90" cy="100" rx="23" ry="15"/><ellipse class="flute-hole" cx="90" cy="100" rx="9" ry="5"/><path class="flute-rod" d="M167 73H681"/>';
+ body+=text(250,22,'LEFT HAND','hand-label')+text(480,22,'RIGHT HAND','hand-label')+text(205,209,'THUMB','small-diagram-label')+text(425,209,'Filled = press · outline = release','small-diagram-label');
+ for(const [id,x,y,label]of fluteKeys){const main=/^[lr][123]$/.test(id);body+=`<g class="flute-key ${down.has(id)?'is-pressed':''}" data-key="${id}">`+(main?`<circle cx="${x}" cy="${y}" r="21"/>`:`<rect x="${x-23}" y="${y-14}" width="46" height="28" rx="12"/>`)+text(x,y+5,label,'flute-key-label')+'</g>'}
+ const detail=pressed?'Boehm flute · C foot · standard fingering':'Outside the C4–C7 fingering guide';
+ return {markup:svg(body,name(midi)+'; '+detail),detail};
+}
+function diagram(key,midi,transpose=0,options={}){
+ if(key==='piano')return keyboard(midi,options);
+ if(key==='violin')return violin(midi);
+ if(key==='guitar')return guitar(midi,options);
+ if(key==='flute')return flute(midi);
+ throw Error('Unsupported instrument');
+}
+function render(container,key,midi,transpose=0,options={}){
+ const layout=[key,key==='piano'?options.minMidi:'',key==='piano'?options.maxMidi:'',key==='guitar'?options.guitarFrets:''].join(':');
+ const result=diagram(key,midi,transpose,options);
+ if(container.dataset.instrumentLayout!==layout){container.innerHTML=result.markup;container.dataset.instrumentLayout=layout;return result.detail}
+ if(key==='piano'){
+  container.querySelector('.target-key')?.classList.remove('target-key');container.querySelector(`[data-midi="${midi}"]`)?.classList.add('target-key');
+  const target=keyboardModel(midi,options).find(k=>k.midi===midi),mark=container.querySelector('.piano-hand-marker');
+  if(target&&mark){mark.setAttribute('transform',`translate(${target.x+target.width/2} ${target.black?90:148})`);mark.querySelector('.finger-number').textContent=options.finger||1}
+ }else if(key==='violin'||key==='guitar'){
+  const position=stringPosition(key,midi),mark=container.querySelector('.string-marker');mark.setAttribute('visibility',position?'visible':'hidden');
+  if(position){const x=key==='violin'?violinX(position.fret):position.fret===0?103:126+(position.fret-.5)*540/(options.guitarFrets||12),y=key==='violin'?66+(3-position.string)*32:54+(5-position.string)*25;mark.setAttribute('transform',`translate(${x} ${y})`);mark.querySelector('.finger-number').textContent=position.finger}
+ }else{
+  const down=new Set(fluteFingering(midi)||[]);for(const [id]of fluteKeys)container.querySelector(`[data-key="${id}"]`).classList.toggle('is-pressed',down.has(id));
+ }
+ container.querySelector('svg').setAttribute('aria-label',name(midi)+'; '+result.detail);
+ return result.detail;
+}
+const api={diagram,render,stringPosition,pianoFingerings,fluteFingering};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CadenceInstrumentView=api;
 })(typeof window!=='undefined'?window:globalThis);

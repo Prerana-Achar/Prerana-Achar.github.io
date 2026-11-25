@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
-const presets={piano:'acoustic_grand_piano',guitar:'acoustic_guitar_nylon',violin:'violin',cello:'cello',flute:'flute',clarinet:'clarinet',trumpet:'trumpet',alto:'alto_sax',bass:'electric_bass_finger',voice:'choir_aahs'};
-const harmonics={piano:[1,.45,.2,.1],guitar:[1,.5,.25,.12,.06],violin:[1,.65,.4,.3,.2,.12],cello:[1,.6,.35,.2,.12],flute:[1,.12,.04],clarinet:[1,0,.6,0,.3,0,.12],trumpet:[1,.8,.6,.4,.25],alto:[1,.65,.45,.3,.2],bass:[1,.45,.2],voice:[1,.25,.4,.12]};
+const presets={piano:'acoustic_grand_piano',guitar:'acoustic_guitar_nylon',violin:'violin',flute:'flute'};
+const harmonics={piano:[1,.45,.2,.1],guitar:[1,.5,.25,.12,.06],violin:[1,.65,.4,.3,.2,.12],flute:[1,.12,.04]};
 const sampleName=m=>['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][m%12]+(Math.floor(m/12)-1);
 class InstrumentAudio{
  constructor(context){this.context=context;this.banks=new Map();this.voices=new Set()}
@@ -47,7 +47,7 @@ class InstrumentAudio{
    osc.setPeriodicWave(ac.createPeriodicWave(new Float32Array(partial.length+1),new Float32Array([0,...partial])));
    osc.frequency.value=440*2**((midi-69)/12);osc.connect(gain);nodes.push(osc);volume*=.45;
   }
-  const plucked=['piano','guitar','bass'].includes(key),attack=plucked?.008:.035,release=.12,end=when+length+release;
+  const plucked=['piano','guitar'].includes(key),attack=plucked?.008:.035,release=.12,end=when+length+release;
   gain.gain.setValueAtTime(0,when);gain.gain.linearRampToValueAtTime(volume,when+Math.min(attack,length/2));
   if(plucked)gain.gain.exponentialRampToValueAtTime(Math.max(.0001,volume*.25),when+length);
   else gain.gain.setValueAtTime(volume,when+length);

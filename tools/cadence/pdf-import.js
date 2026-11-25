@@ -20,7 +20,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
  const abort=()=>{try{render?.cancel()}finally{void releasePdf();worker?.terminate()}};
  signal?.addEventListener('abort',abort,{once:true});
  try{
-  onProgress('Loading PDF tools…');
+  onProgress('Loading PDF tools…',{stage:'prepare'});
   const pdfjs=await import(PDFJS+'pdf.min.mjs');
   if(signal?.aborted)throw canceled();
   pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';
@@ -32,7 +32,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
   const pages=[];
   for(let n=1;n<=documentPdf.numPages;n++){
    if(signal?.aborted)throw canceled();
-   onProgress(`Preparing page ${n} of ${documentPdf.numPages}…`);
+   onProgress(`Preparing page ${n} of ${documentPdf.numPages}…`,{stage:'prepare',done:n-1,total:documentPdf.numPages});
    const page=await documentPdf.getPage(n),viewport=page.getViewport({scale:200/72});
    if(viewport.width*viewport.height>24000000)throw Error('This PDF page is too large. Export it at a standard page size.');
    const canvas=Object.assign(document.createElement('canvas'),{width:Math.ceil(viewport.width),height:Math.ceil(viewport.height)});
@@ -42,6 +42,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
     if(!blob)throw Error('Your browser could not prepare this PDF page.');
     pages.push(await blob.arrayBuffer());
+    onProgress(`Prepared page ${n} of ${documentPdf.numPages}`,{stage:'prepare',done:n,total:documentPdf.numPages});
    }finally{render=null;canvas.width=canvas.height=0;page.cleanup()}
   }
   await releasePdf();
@@ -53,7 +54,7 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
    const finish=(error,bytes)=>{signal?.removeEventListener('abort',stop);error?reject(error):resolve(bytes)};
    worker.onerror=()=>finish(Error('The PDF recognition engine could not load. Check your internet connection, refresh and try again.'));
    worker.onmessage=({data})=>{
-    if(data.type==='status')onProgress(data.text+(data.total&&data.text.includes('Downloading')?` ${Math.round(data.done/1048576)} / ${Math.round(data.total/1048576)} MB`:''));
+    if(data.type==='status')onProgress(data.text+(data.total&&data.text.includes('Downloading')?` ${Math.round(data.done/1048576)} / ${Math.round(data.total/1048576)} MB`:''),{stage:data.stage||(data.text.includes('Downloading')?'download':'load'),done:data.done,total:data.total});
     else if(data.type==='error')finish(Error('PDF recognition failed: '+data.text));
     else if(data.type==='result'){
      const bytes=new Uint8Array(data.midi);
