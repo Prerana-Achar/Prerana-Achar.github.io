@@ -3,7 +3,7 @@ import * as networks from './ort.js';
 const PYODIDE='https://cdn.jsdelivr.net/pyodide/v314.0.7/full/';
 const ASSETS='https://dsalex1.github.io/sheetscan/';
 const post=(type,data={})=>self.postMessage({type,...data});
-const read=async path=>{const response=await fetch(new URL(path,import.meta.url));if(!response.ok)throw Error('Could not load '+path);return response.text()};
+const read=async path=>{const url=new URL(path,import.meta.url);url.search='v=20261125-3';const response=await fetch(url);if(!response.ok)throw Error('Could not load '+path);return response.text()};
 self.onmessage=async({data})=>{
  try{
   post('status',{text:'Loading recognition engine and models (about 150 MB on first use)…'});
@@ -27,5 +27,5 @@ self.onmessage=async({data})=>{
   const midi=new Uint8Array(typeof result.toJs==='function'?result.toJs():result);
   result.destroy?.();
   self.postMessage({type:'result',midi:midi.buffer,xml},[midi.buffer]);
- }catch(error){post('error',{text:String(error?.message??error).slice(-1200)})}
+ }catch(error){post('error',{text:String(error?.message??error).slice(-4000)})}
 };

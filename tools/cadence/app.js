@@ -142,9 +142,9 @@ async function importFile(file){
  }catch(error){
   if(token!==generation)return;phase='idle';importController=null;setControls();
   if(error.name==='AbortError'&&!timedOut){$('pdf-import-dialog').close();status('PDF import canceled.');feedback('Import canceled.','Choose a score whenever you’re ready.');return}
-  const noMusic=/No music found on any page/i.test(error.message),technical=/Traceback|PythonError/i.test(error.message);
-  const title=timedOut?'Import took too long':noMusic?'No readable music found':'Could not read this PDF';
-  const message=timedOut?'Try a PDF with fewer pages. Large scores can take longer to recognize.':noMusic?'No readable music was detected on these pages. Try a clear, upright PDF of printed staff notation, or upload MIDI exported from the original score.':technical?'The recognition engine could not read this score. Try fewer pages or a clearer PDF, or upload MIDI.':error.message;
+  const noMusic=/No music found on any page/i.test(error.message),engineFailure=/Recognition engine failed/i.test(error.message),technical=/Traceback|PythonError/i.test(error.message);
+  const title=timedOut?'Import took too long':engineFailure?'Recognition engine failed':noMusic?'No readable music found':'Could not read this PDF';
+  const message=timedOut?'Try a PDF with fewer pages. Large scores can take longer to recognize.':engineFailure?'The recognition engine stopped while reading a page. Open Technical details for the original error; this does not mean your score is blank.':noMusic?'No readable music was detected on these pages. Try a clear, upright PDF of printed staff notation, or upload MIDI exported from the original score.':technical?'The recognition engine could not read this score. Try fewer pages or a clearer PDF, or upload MIDI.':error.message;
   pdfImportError(message,{title,details:technical?error.message:''});feedback(title,message,'bad');
  }finally{clearTimeout(timer)}
 }

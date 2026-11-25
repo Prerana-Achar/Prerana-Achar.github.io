@@ -23,6 +23,5 @@ and update dependency. homr and its weights use AGPL-3.0; see upstream's
 for training-data terms. PDF and rendered page bytes are processed locally;
 only runtime/model downloads make external requests.
 
-The test PDF is a lossless PDF rendering of Sheetscan's public Bach BWV 66.6
-sample PNG at 200 dpi. The reference MIDI is converted from its ground-truth
-MusicXML. These fixtures share the source repository's AGPL-3.0 license.
+No test PDFs or reference MIDI fixtures are bundled. Page processing errors
+are preserved instead of being reported as missing music.

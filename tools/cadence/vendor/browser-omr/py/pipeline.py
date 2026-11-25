@@ -317,18 +317,27 @@ def scan(paths, progress=lambda done, total: None):
     global _page
     with tempfile.TemporaryDirectory() as tmp:
         xmls, layout = [], [[] for _ in paths]
+        skipped = []
         for _page, path in enumerate(paths):
             progress(_page, len(paths))
             try:
                 xml, layout[_page] = _read_page(path)
-            except Exception as e:  # e.g. a title page: "No staffs found"
-                print(f"page {_page + 1} skipped: {e}", file=sys.stderr)
-                continue
+            except Exception as e:
+                # Only a genuine no-staff result can be skipped as a title page.
+                # Model, runtime and parsing failures must retain their cause.
+                detail = f"Page {_page + 1}: {type(e).__name__}: {e}"
+                if str(e).strip().lower() in {
+                    "no staffs found", "no staffs found.", "no staves found", "no staves found.",
+                    "no noteheads or clefs found", "no noteheads or clefs found."
+                }:
+                    skipped.append(detail)
+                    continue
+                raise RuntimeError(f"Recognition engine failed. {detail}") from e
             xmls.append(os.path.join(tmp, f"{_page}.musicxml"))
             ET.ElementTree(xml).write(xmls[-1], encoding="unicode", xml_declaration=True)
         progress(len(paths), len(paths))
         if not xmls:
-            raise ValueError("No music found on any page")
+            raise ValueError("No music found on any page. " + "; ".join(skipped))
         merged = process_concat(xmls)[0] if len(xmls) > 1 else ET.parse(xmls[0]).getroot()
         _give_every_staff_a_clef(merged)
         _order_children(merged)

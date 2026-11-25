@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const base = new URL('.', document.currentScript.src);
-const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/';
+const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/';
 function canceled(){return new DOMException('PDF import canceled','AbortError')}
 async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
  if(file.size>20*1024*1024)throw Error('Choose a PDF smaller than 20 MB.');
@@ -21,12 +21,17 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
  signal?.addEventListener('abort',abort,{once:true});
  try{
   onProgress('Loading PDF tools…',{stage:'prepare'});
-  const pdfjs=await import(PDFJS+'pdf.min.mjs');
+  const pdfjs=await import(PDFJS+'build/pdf.min.mjs');
   if(signal?.aborted)throw canceled();
-  pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';
+  pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'build/pdf.worker.min.mjs';
   const data=await file.arrayBuffer();
   if(signal?.aborted)throw canceled();
-  loading=pdfjs.getDocument({data,isEvalSupported:false});
+  loading=pdfjs.getDocument({data,isEvalSupported:false,stopAtErrors:true,
+   wasmUrl:PDFJS+'wasm/',iccUrl:PDFJS+'iccs/',cMapUrl:PDFJS+'cmaps/',cMapPacked:true,
+   standardFontDataUrl:PDFJS+'standard_fonts/',
+   // Scanned scores can contain very large images. Decode to pixels instead of
+   // relying on browser ImageDecoder/OffscreenCanvas bitmap transfers.
+   isImageDecoderSupported:false,isOffscreenCanvasSupported:false});
   documentPdf=await loading.promise;
   if(documentPdf.numPages<1||documentPdf.numPages>12)throw Error('Choose a PDF with 1–12 pages, or split a longer score first.');
   const pages=[];
@@ -39,15 +44,21 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
    try{
     render=page.render({canvasContext:canvas.getContext('2d'),canvas,viewport,intent:'print'});
     await render.promise;
+    // A successful RenderTask can still produce an empty page when an image
+    // failed to decode. Do not spend minutes recognizing an all-white bitmap.
+    const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+    let ink=false;for(let i=0;i<pixels.length;i+=64){if(pixels[i+3]&&Math.min(pixels[i],pixels[i+1],pixels[i+2])<245){ink=true;break}}
+    if(!ink)continue;
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
     if(!blob)throw Error('Your browser could not prepare this PDF page.');
     pages.push(await blob.arrayBuffer());
     onProgress(`Prepared page ${n} of ${documentPdf.numPages}`,{stage:'prepare',done:n,total:documentPdf.numPages});
    }finally{render=null;canvas.width=canvas.height=0;page.cleanup()}
   }
+  if(!pages.length)throw Error('The PDF pages rendered blank. The scanned images could not be read; try re-exporting the PDF.');
   await releasePdf();
   if(signal?.aborted)throw canceled();
-  worker=new Worker(new URL('vendor/browser-omr/omr.worker.js',base),{type:'module'});
+  worker=new Worker(new URL('vendor/browser-omr/omr.worker.js?v=20261125-3',base),{type:'module'});
   return await new Promise((resolve,reject)=>{
    const stop=()=>reject(canceled());
    signal?.addEventListener('abort',stop,{once:true});

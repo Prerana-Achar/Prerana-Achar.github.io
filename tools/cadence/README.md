@@ -135,3 +135,9 @@ catalog in a new tab; this is not an embedded live catalog or external API.
 Download additional scores there and use Import from files for PDF or MIDI.
 Edition credits and licenses are visible in the chooser and library/NOTICE.md.
 Keep song-library.js and library/midi/ in the GitHub Pages publish.
+
+PDF rasterization supplies PDF.js decoder, color-profile, CMap and font asset URLs
+and uses pixel decoding for scanned images. Rendering errors are not ignored;
+all-white rendered pages are filtered before loading the recognition models.
+Only a specific no-staff detection result is skipped by the recognition pipeline;
+other page failures retain their page number and original cause in Technical details.
