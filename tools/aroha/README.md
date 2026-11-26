@@ -182,3 +182,12 @@ releases decoder caches when replaced. Worker termination frees the engine on
 completion, cancellation or failure. No test, demo, log or backup files are
 required in the published Aroha folder. Keep the bundled source archive, MIDI
 library, instrument samples and their license notices.
+
+## Contact delivery
+
+The contact form opens the visitor's email application using a mailto link.
+The recipient and subject Aroha are filled in automatically, along with the
+message, question/feedback category and optional name. The visitor reviews the
+draft and sends it from their email app. No external form service is used.
+The recipient address is public in the page and browser code. The message
+stays in the form if no email handler is configured or the visitor cancels.

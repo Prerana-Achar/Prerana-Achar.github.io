@@ -3,7 +3,7 @@
   <desc id="aroha-description">Lavender music notes on a dark practice score.</desc>
   <rect width="600" height="450" fill="#111018"/>
   <rect x="62" y="60" width="476" height="330" rx="24" fill="#1b1925"/>
-  <text x="300" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-2" fill="#eeeaf7">aroha.</text>
+  <text x="300" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-2" fill="#eeeaf7">Aroha.</text>
   <g stroke="#51465f" stroke-width="2">
     <path d="M120 220H480M120 240H480M120 260H480M120 280H480M120 300H480"/>
   </g>
