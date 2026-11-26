@@ -104,3 +104,7 @@ button:disabled{opacity:.55}input[type=range],.check-line input{accent-color:var
 @media(max-width:760px){.select-song{margin-bottom:0}}@media(max-width:480px){.song-dialog{padding:22px 18px}.song-filters{grid-template-columns:1fr}.song-list{max-height:34dvh}.song-choice{grid-template-columns:1fr}.song-choice>small{grid-column:1;grid-row:auto;justify-self:start}.song-library-more{margin-bottom:16px}}
 
 .pdf-progress-caption{display:flex;align-items:center;justify-content:space-between;gap:12px}.pdf-progress-caption #pdf-import-elapsed{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Reference preview lives beside the playback controls. */
+.preview-button[aria-pressed="true"]{background:var(--purple-light);color:var(--purple);border-color:var(--purple)}
+@media(max-width:480px){.transport{flex-wrap:wrap;gap:12px}.transport-main{gap:6px}.transport-main .button{padding:10px 12px}.transport .beat-indicator{margin-left:auto}}
