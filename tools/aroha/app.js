@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const M=window.CadenceMusic,$=id=>document.getElementById(id);
+const M=window.ArohaMusic,$=id=>document.getElementById(id);
 let scoreSource='midi',libraryInstrument=null,song,notes=[],part,page=0,scoreMap=new Map(),noteLookup=new Map();
 let practiceView='instrument',instrumentNotes=[],instrumentNoteIndex=new Map(),instrumentIndex=0,instrumentSignature='',instrumentDiagramSignature='',instrumentRange={minMidi:60,maxMidi:60},instrumentFingers=new Map();
 const isInstrumentView=()=>practiceView==='instrument';
@@ -12,7 +12,7 @@ const running=()=>['playing','armed','learning','preview','requesting','importin
 const status=text=>$('app-status').textContent=text;
 const formatTime=t=>{t=Math.max(0,Math.floor(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
 function feedback(title,text,type=''){const panel=$('feedback-copy').closest('section');panel.classList.remove('good','bad');if(type)panel.classList.add(type);$('feedback-headline').textContent=title;$('feedback-copy').textContent=text;$('feedback-icon').textContent=type==='good'?'✓':type==='bad'?'!':'♪'}
-function audioContext(){context??=new(window.AudioContext||window.webkitAudioContext)();instrumentAudio??=new window.CadenceAudio(context);return context}
+function audioContext(){context??=new(window.AudioContext||window.webkitAudioContext)();instrumentAudio??=new window.ArohaAudio(context);return context}
 function silence(){instrumentAudio?.stop();for(const item of metronomeVoices){try{item.osc.stop();item.osc.disconnect();item.gain.disconnect()}catch{}}metronomeVoices=[]}
 async function prepareInstrument(token){
  const key=$('instrument-select').value;status('Loading '+instrument().name+' sound…');
@@ -75,13 +75,13 @@ function renderInstrumentNote(){
  $('instrument-note-detail').textContent=!target?'No notes in this range':instrument().transpose?'Sounds '+M.noteName(target.midi):'';$('instrument-note-detail').hidden=!$('instrument-note-detail').textContent;
  const hand=$('piano-hand').value||'right',finger=instrumentFingers.get(target?.id)||1;
  const diagramSignature=[key,target?.midi,instrumentRange.minMidi,instrumentRange.maxMidi,instrumentRange.guitarFrets,hand,finger].join(':');
- if(diagramSignature!==instrumentDiagramSignature){instrumentDiagramSignature=diagramSignature;$('instrument-position').textContent=target?window.CadenceInstrumentView.render($('instrument-diagram'),key,target.midi,instrument().transpose,{...instrumentRange,hand,finger}):'';if(!target){$('instrument-diagram').innerHTML='';delete $('instrument-diagram').dataset.instrumentLayout}}
+ if(diagramSignature!==instrumentDiagramSignature){instrumentDiagramSignature=diagramSignature;$('instrument-position').textContent=target?window.ArohaInstrumentView.render($('instrument-diagram'),key,target.midi,instrument().transpose,{...instrumentRange,hand,finger}):'';if(!target){$('instrument-diagram').innerHTML='';delete $('instrument-diagram').dataset.instrumentLayout}}
  $('measure-label').textContent=target?'MEASURE '+(barForTick(target.tick)+1):'NO NOTES';
  $('page-label').textContent=items.length?'Note '+(instrumentIndex+1)+' of '+items.length:'0 notes';
 }
 function measuresPerPage(){const value=Number($('measures-per-page').value);return Number.isFinite(value)?Math.max(1,Math.min(16,Math.floor(value)||4)):4}
 function renderScore(){
- if(!song){updateViewControls();return}updateViewControls();instrumentNotes=selectedNotes();instrumentRange=instrumentNotes.reduce((range,n)=>({minMidi:Math.min(range.minMidi,n.midi),maxMidi:Math.max(range.maxMidi,n.midi)}),{minMidi:Infinity,maxMidi:-Infinity});instrumentNoteIndex=new Map(instrumentNotes.map((n,i)=>[n.id,i]));instrumentRange.guitarFrets=instrumentNotes.some(n=>(window.CadenceInstrumentView.stringPosition('guitar',n.midi)?.fret||0)>12)?24:12;const fingers=$('instrument-select').value==='piano'?window.CadenceInstrumentView.pianoFingerings(instrumentNotes,$('piano-hand').value||'right'):[];instrumentFingers=new Map(instrumentNotes.map((n,i)=>[n.id,fingers[i]]));instrumentSignature='';
+ if(!song){updateViewControls();return}updateViewControls();instrumentNotes=selectedNotes();instrumentRange=instrumentNotes.reduce((range,n)=>({minMidi:Math.min(range.minMidi,n.midi),maxMidi:Math.max(range.maxMidi,n.midi)}),{minMidi:Infinity,maxMidi:-Infinity});instrumentNoteIndex=new Map(instrumentNotes.map((n,i)=>[n.id,i]));instrumentRange.guitarFrets=instrumentNotes.some(n=>(window.ArohaInstrumentView.stringPosition('guitar',n.midi)?.fret||0)>12)?24:12;const fingers=$('instrument-select').value==='piano'?window.ArohaInstrumentView.pianoFingerings(instrumentNotes,$('piano-hand').value||'right'):[];instrumentFingers=new Map(instrumentNotes.map((n,i)=>[n.id,fingers[i]]));instrumentSignature='';
  if(isInstrumentView()){scoreMap=new Map();renderInstrumentNote();return}
  const maxPage=Math.max(0,Math.ceil((practiceRange().endIndex-practiceRange().startIndex)/measuresPerPage())-1);page=Math.min(maxPage,Math.max(0,page));
  const range=practiceRange(),firstBar=range.startIndex+page*measuresPerPage(),lastBar=Math.min(range.endIndex,firstBar+measuresPerPage());
@@ -149,7 +149,7 @@ async function importFile(file){
  const token=++generation;importController=new AbortController();const controller=importController;phase='importing';setControls();let timedOut=false;
  const timer=setTimeout(()=>{timedOut=true;controller.abort()},600000);
  try{
-  const bytes=await window.CadencePdf.recognizePdf(file,{signal:controller.signal,onProgress:(text,progress)=>{if(token===generation)updatePdfProgress(text,progress)}});
+  const bytes=await window.ArohaPdf.recognizePdf(file,{signal:controller.signal,onProgress:(text,progress)=>{if(token===generation)updatePdfProgress(text,progress)}});
   if(token!==generation)return;loadMidi(bytes,file.name.replace(/\.pdf$/i,''),'pdf');status('PDF notes detected. Review the part, pitches and rhythm before practicing; recognition can make mistakes.');feedback('Your PDF is ready to review.','Check the recognized notes, choose your part and instrument, then start practice.');
  }catch(error){
   if(token!==generation)return;phase='idle';importController=null;setControls();
@@ -307,7 +307,7 @@ let songRequest=null;
 function cancelSongRequest(){songRequest?.abort();songRequest=null;$('song-dialog').removeAttribute('aria-busy')}
 function renderSongLibrary(){
  const query=$('song-search').value.trim().toLocaleLowerCase(),key=$('song-instrument').value;
- const entries=(window.CadenceLibrary||[]).filter(s=>(key==='all'||s.instrument===key)&&[s.title,s.work,s.composer,s.instrument].join(' ').toLocaleLowerCase().includes(query));
+ const entries=(window.ArohaLibrary||[]).filter(s=>(key==='all'||s.instrument===key)&&[s.title,s.work,s.composer,s.instrument].join(' ').toLocaleLowerCase().includes(query));
  $('song-library-count').textContent=entries.length+(entries.length===1?' piece':' pieces');$('song-list').replaceChildren();
  $('browse-scores').href=key==='all'?'https://www.mutopiaproject.org/browse.html':'https://www.mutopiaproject.org/cgibin/make-table.cgi?Instrument='+encodeURIComponent(key[0].toUpperCase()+key.slice(1));
  for(const entry of entries){

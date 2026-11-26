@@ -18,7 +18,7 @@ You may copy and redistribute these samples and create adaptations under that
 license, with appropriate attribution, a link to the license and an indication
 of changes. No endorsement by the original authors is implied.
 
-Cadence changes: individual MP3 byte streams were extracted from the four
+Aroha changes: individual MP3 byte streams were extracted from the four
 JavaScript/base64 bundles. Audio bytes were not edited or re-encoded. The
 JavaScript wrappers, demonstration pages and tests are not included.
 
@@ -32,4 +32,4 @@ Included sets (88 chromatic notes, A0 through C8, in each):
 | flute-mp3 | Flute | 2,224,778 |
 
 All paths and filenames must be preserved when publishing on GitHub Pages.
-The player fetches these files from the same origin as Cadence.
+The player fetches these files from the same origin as Aroha.

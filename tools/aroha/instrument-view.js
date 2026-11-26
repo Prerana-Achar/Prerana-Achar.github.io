@@ -128,5 +128,5 @@ function render(container,key,midi,transpose=0,options={}){
  return result.detail;
 }
 const api={diagram,render,stringPosition,pianoFingerings,fluteFingering};
-if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CadenceInstrumentView=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ArohaInstrumentView=api;
 })(typeof window!=='undefined'?window:globalThis);

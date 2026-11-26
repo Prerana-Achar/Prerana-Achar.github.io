@@ -1,4 +1,4 @@
-# Cadence song library
+# Aroha song library
 
 These are selected repertoire editions from the Mutopia Project, bundled as
 unchanged MIDI files for the production song chooser. They are not auto-loaded.

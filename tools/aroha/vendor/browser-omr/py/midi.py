@@ -68,7 +68,7 @@ def convert(xml):
                 label = location if label in {'Piano', 'Voice', 'PDF part'} else label + ' · ' + location.lower()
             staff_events[staff] = [(0, -2, meta(3, label.encode('utf-8'))),
                                    (0, -1, bytes([192 | channel, 0])),
-                                   (0, -1, meta(1, b'Cadence:pdf-pitch=written'))]
+                                   (0, -1, meta(1, b'Aroha:pdf-pitch=written'))]
         divisions, numerator, denominator = 1, 4, 4
         start, ties = Fraction(0), {}
         for measure in part.findall('measure'):
@@ -82,7 +82,7 @@ def convert(xml):
                         staff = clef.get('number', '1')
                         if staff in staff_events:
                             mode = 'concert' if int(clef.findtext('clef-octave-change', '0')) else 'written'
-                            staff_events[staff].append((start + cursor, 0, meta(1, ('Cadence:pdf-pitch=' + mode).encode())))
+                            staff_events[staff].append((start + cursor, 0, meta(1, ('Aroha:pdf-pitch=' + mode).encode())))
                     time = item.find('time')
                     if time is not None:
                         numerator = sum(int(n) for n in time.findtext('beats', '4').split('+'))

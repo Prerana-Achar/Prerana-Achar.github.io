@@ -10,7 +10,7 @@ const kept = new Map() // outputs which stay here: the decoder's cache, fed back
 /** Fetch with byte progress, kept in the Cache API so that it downloads once. */
 export async function cached(url, onBytes = () => {}) {
   // Recognition still works when private browsing or quota settings deny storage.
-  const cache = await globalThis.caches?.open('cadence-omr-assets-v1').catch(() => null)
+  const cache = await globalThis.caches?.open('aroha-omr-assets-v1').catch(() => null)
   let res = await cache?.match(url)
   if (!res) {
     res = await fetch(url)

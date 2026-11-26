@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const presets={piano:'acoustic_grand_piano',guitar:'acoustic_guitar_nylon',violin:'violin',flute:'flute'};
-// Bundled samples are served from the same GitHub Pages site as Cadence.
+// Bundled samples are served from the same GitHub Pages site as Aroha.
 const sampleRoot=new URL('vendor/soundfonts/FluidR3_GM/',document.currentScript.src).href;
 const sampleName=m=>['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][m%12]+(Math.floor(m/12)-1);
 class InstrumentAudio{
@@ -66,5 +66,5 @@ class InstrumentAudio{
  }
  stop(){this.loadingController?.abort();this.loadingController=null;this.request++;for(const voice of this.voices){for(const node of voice.nodes){try{node.stop();node.disconnect()}catch{}}voice.gain.disconnect()}this.voices.clear()}
 }
-root.CadenceAudio=InstrumentAudio;
+root.ArohaAudio=InstrumentAudio;
 })(typeof window!=='undefined'?window:globalThis);

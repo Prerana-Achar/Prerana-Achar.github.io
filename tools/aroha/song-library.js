@@ -1,5 +1,5 @@
 /* Selected Mutopia editions. See library/NOTICE.md for source and licenses. */
-window.CadenceLibrary = Object.freeze([
+window.ArohaLibrary = Object.freeze([
   {
     "id": "minuet-g",
     "title": "Minuet in G",

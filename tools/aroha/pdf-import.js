@@ -81,5 +81,5 @@ async function recognizePdf(file,{signal,onProgress=()=>{}}={}){
   throw error;
  }finally{signal?.removeEventListener('abort',abort);worker?.terminate();await releasePdf()}
 }
-root.CadencePdf={recognizePdf};
+root.ArohaPdf={recognizePdf};
 })(window);

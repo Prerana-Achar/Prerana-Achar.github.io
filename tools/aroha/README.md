@@ -1,6 +1,6 @@
-# Cadence for GitHub Pages
+# Aroha for GitHub Pages
 
-Publish this folder at `tools/cadence/` using the existing GitHub Pages workflow.
+Publish this folder at `tools/aroha/` using the existing GitHub Pages workflow.
 There is no build step. MIDI import and practice run in the browser.
 
 ## PDF recognition without a launcher
@@ -70,7 +70,7 @@ with Standard, Comfortable and Large note sizes, measure numbers and additional
 spacing. Irregular durations use conventional tied note values; rests and beams
 follow beats, and repeated accidentals are suppressed within a measure. All tied
 fragments retain the original note ID for feedback. These are improvements to
-Cadence's existing renderer, not an embedded MuseScore engine. MIDI still lacks
+Aroha's existing renderer, not an embedded MuseScore engine. MIDI still lacks
 original spelling, articulation and page layout; rhythm remains quantized to
 sixteenths for display. Original performance timing is unchanged for grading.
 
@@ -114,7 +114,7 @@ Fingering references:
 - Flute primary fingerings: https://www.wfg.woodwind.org/flute/fl_bas_1.html
   (plus fl_bas_2.html and fl_bas_3.html for the upper octaves).
 
-Cadence opens without a selected song. Choose a library piece or import a PDF
+Aroha opens without a selected song. Choose a library piece or import a PDF
 or MIDI to enable preview and practice. No simulated take is included.
 
 The Song position slider works in both views. Dragging during preview stops the
@@ -180,5 +180,5 @@ all bundled library MIDI files, instrument sample coverage, and inference tensor
 cleanup. Recognition releases temporary input/output tensors after every run and
 releases decoder caches when replaced. Worker termination frees the engine on
 completion, cancellation or failure. No test, demo, log or backup files are
-required in the published Cadence folder. Keep the bundled source archive, MIDI
+required in the published Aroha folder. Keep the bundled source archive, MIDI
 library, instrument samples and their license notices.

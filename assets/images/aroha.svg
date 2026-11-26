@@ -1,9 +1,9 @@
-<svg role="img" aria-labelledby="cadence-title cadence-description" xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
-  <title id="cadence-title">Cadence</title>
-  <desc id="cadence-description">Lavender music notes on a dark practice score.</desc>
+<svg role="img" aria-labelledby="aroha-title aroha-description" xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+  <title id="aroha-title">Aroha</title>
+  <desc id="aroha-description">Lavender music notes on a dark practice score.</desc>
   <rect width="600" height="450" fill="#111018"/>
   <rect x="62" y="60" width="476" height="330" rx="24" fill="#1b1925"/>
-  <text x="300" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-2" fill="#eeeaf7">cadence.</text>
+  <text x="300" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-2" fill="#eeeaf7">aroha.</text>
   <g stroke="#51465f" stroke-width="2">
     <path d="M120 220H480M120 240H480M120 260H480M120 280H480M120 300H480"/>
   </g>
@@ -15,5 +15,5 @@
     <ellipse cx="395" cy="240" rx="13" ry="9" transform="rotate(-20 395 240)"/>
     <path d="M407 237V170"/>
   </g>
-  <text x="300" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#b2a9c4">Progress, one phrase at a time.</text>
+  <text x="300" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#b2a9c4">Learning music made easy</text>
 </svg>

@@ -1,4 +1,4 @@
-// Cadence adapter for Sheetscan's homr/Pyodide bridge (AGPL-3.0).
+// Aroha adapter for Sheetscan's homr/Pyodide bridge (AGPL-3.0).
 import * as networks from './ort.js?v=20261125-7';
 const PYODIDE='https://cdn.jsdelivr.net/pyodide/v314.0.7/full/';
 const ASSETS='https://dsalex1.github.io/sheetscan/';

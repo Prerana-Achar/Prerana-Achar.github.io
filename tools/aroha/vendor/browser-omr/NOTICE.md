@@ -3,7 +3,7 @@
 `ort.js`, `py/ort_shim.py` and `py/pipeline.py` are adapted from
 [Sheetscan](https://github.com/dsalex1/sheetscan), commit
 `e6c82d8819f8ce475f7efdd5211fc44e9e58b6bc`, under AGPL-3.0.
-The full license is included in LICENSE. Cadence's worker adapter and MIDI
+The full license is included in LICENSE. Aroha's worker adapter and MIDI
 converter in this directory are also supplied under AGPL-3.0.
 
 Changes: serve plain modules without Vite; run ONNX with one thread for GitHub
@@ -28,7 +28,7 @@ only runtime/model downloads make external requests.
 No test PDFs or reference MIDI fixtures are bundled. Page processing errors
 are preserved instead of being reported as missing music.
 
-Cadence corrections preserve staves as separate selectable MIDI tracks, retain
+Aroha corrections preserve staves as separate selectable MIDI tracks, retain
 printed time-signature changes across systems, detect octave-above clefs, and
 mark octave-corrected MIDI notes to prevent a second playback transposition.
 Temporary inference tensors and replaced decoder caches are released explicitly.

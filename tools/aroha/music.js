@@ -35,7 +35,7 @@ function parseMidi(input){
    else if(status<240)running=status;
    if(status===255){const type=u8(),size=vlq();ensure(size);if(p+size>end)throw Error('Invalid MIDI meta event.');
     const data=bytes.subarray(p,p+size);p+=size;
-    if(type===1){const text=new TextDecoder().decode(data);if(text==='Cadence:pdf-pitch=concert')pdfConcertPitch=true;else if(text==='Cadence:pdf-pitch=written')pdfConcertPitch=false}
+    if(type===1){const text=new TextDecoder().decode(data);if(text==='Aroha:pdf-pitch=concert')pdfConcertPitch=true;else if(text==='Aroha:pdf-pitch=written')pdfConcertPitch=false}
     if(type===3)name=new TextDecoder().decode(data).replace(/[\x00-\x1f]/g,'').slice(0,100);
     if(type===81&&size===3){const us=data[0]*65536+data[1]*256+data[2];if(us>0)tempos.push({tick,us});}
     if(type===88&&size>=2){const n=data[0],d=2**data[1];if(n>0&&n<=32&&d<=32)meters.push({tick,n,d});}
@@ -161,5 +161,5 @@ class WaitJudge{
  summary(){return {correct:this.index,wrong:this.wrongAttempts,missed:0,judged:this.results.size,total:this.notes.length,extras:0,accuracy:this.attempts?Math.round(this.index/this.attempts*100):null}}
 }
 const api={parseMidi,practiceLine,makeNotation,detectPitch,AttackTracker,TempoEstimator,Judge,WaitJudge,noteName,programs,instruments};
-if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CadenceMusic=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ArohaMusic=api;
 })(typeof window!=='undefined'?window:globalThis);
