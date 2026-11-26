@@ -108,3 +108,50 @@ button:disabled{opacity:.55}input[type=range],.check-line input{accent-color:var
 /* Reference preview lives beside the playback controls. */
 .preview-button[aria-pressed="true"]{background:var(--purple-light);color:var(--purple);border-color:var(--purple)}
 @media(max-width:480px){.transport{flex-wrap:wrap;gap:12px}.transport-main{gap:6px}.transport-main .button{padding:10px 12px}.transport .beat-indicator{margin-left:auto}}
+
+/* Responsive settings drawer and a quieter practice layout. */
+.settings-toggle,.settings-close{display:none}
+.settings-drawer{padding:0;border:0;border-right:1px solid var(--line);border-radius:0 16px 16px 0;width:min(340px,calc(100vw - 44px));max-width:none;height:100dvh;max-height:none;margin:0;overscroll-behavior:contain;background:var(--surface)}
+.settings-drawer::backdrop{background:#08060db3;backdrop-filter:blur(3px)}
+.settings-drawer .setup{border:0;border-radius:0;min-height:100%;padding:20px;gap:16px}
+.settings-drawer .panel-title h2{font:650 16px 'DM Sans',sans-serif;margin:0}
+.settings-drawer .settings-close{display:inline-grid;font-size:24px;width:40px;height:40px}
+body.settings-open{overflow:hidden}
+.score-paper{min-height:0;padding:14px 20px 10px}
+.instrument-view{min-height:0;padding:6px 0}
+.instrument-note-heading{gap:2px;min-height:80px;justify-content:center}
+.instrument-note-heading strong{font-size:44px}
+.instrument-note-heading .small-label{font-size:10px;letter-spacing:1px}
+.instrument-hand{top:0}
+.instrument-diagram{max-width:680px;margin:0 auto;aspect-ratio:720/230}
+.instrument-view .field-help{height:34px;min-height:34px;line-height:17px;font-size:12px}
+.score-toolbar{margin-bottom:8px}.paper-heading{margin-bottom:6px}
+.score-navigation{padding:8px 20px 12px}.transport{padding:12px 20px}
+@media(max-width:900px){
+ .site-header{height:60px;padding:0 16px;gap:12px}
+ .site-header .settings-toggle{display:inline-grid;flex-shrink:0;width:40px;height:40px}
+ .site-header .brand{font-size:25px;gap:8px}.brand-mark{width:28px;height:29px;border-radius:8px}
+ .site-header nav{display:none}
+ main{padding:0 12px}.workspace{grid-template-columns:minmax(0,1fr);margin-top:14px;gap:0}
+ .score-heading{padding:16px 18px 12px}.score-heading h2{font-size:25px;margin:0}
+ .score-meta{padding:9px 16px;gap:8px 14px;border-top-color:var(--line)}
+ .view-toggle{margin-left:auto}
+ .score-paper{padding:12px 14px 8px}
+ .instrument-view{min-height:0;padding-top:4px}
+ .instrument-note-heading{min-height:76px}.instrument-note-heading strong{font-size:40px}
+ .instrument-diagram{width:100%;margin:0 auto}
+ .live-grid{margin:12px 0;gap:10px}
+ footer{padding:22px 4px;font-size:11px;gap:12px}
+}
+@media(max-width:480px){
+ .score-meta>span{font-size:11px}.view-toggle{gap:1px;padding:2px}.view-toggle button{font-size:11px;padding:7px 8px}
+ .instrument-note-heading{align-items:flex-start;padding-left:4px;min-height:74px;text-align:left}
+ .instrument-note-heading strong{font-size:36px;width:auto;letter-spacing:-1px}
+ .instrument-note-heading>span:last-child{font-size:11px}
+ .instrument-hand{font-size:11px;gap:4px}.instrument-hand select{min-height:32px}
+ .score-navigation{gap:8px;padding:8px 14px}.score-options{gap:10px;margin-top:0}
+ .transport{padding:10px 14px;gap:10px}.transport-main .icon-button{width:40px;height:40px}
+ .transport .beat-indicator{display:none}.song-seek{padding:2px 14px 10px}
+ .input-panel,.feedback-panel{padding:14px;min-height:0}.live-grid{grid-template-columns:1fr}
+ .feedback-icon{margin:8px 0}.summary-panel{padding:14px}
+}

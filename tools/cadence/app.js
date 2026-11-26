@@ -290,6 +290,19 @@ $('playhead').addEventListener('pointerdown',beginSeek);$('playhead').oninput=sh
 $('pdf-import-dialog').addEventListener('close',()=>{if(!$('pdf-import-dialog').open)stopPdfProgress()});
 $('pdf-import-action').onclick=cancelPdfImport;$('pdf-import-dialog').addEventListener('cancel',event=>{event.preventDefault();cancelPdfImport()});
 $('midi-file').onchange=event=>{const file=event.target.files[0];event.target.value='';importFile(file)};
+// Reuse the same settings controls in a modal drawer on smaller screens.
+const settingsMedia=matchMedia('(max-width:900px)'),settingsPanel=$('settings-panel'),settingsDrawer=$('settings-drawer'),settingsHome=settingsPanel.parentElement,settingsNext=settingsPanel.nextElementSibling;
+function closeSettings(){if(settingsDrawer.open)settingsDrawer.close()}
+function placeSettings(){
+ closeSettings();
+ if(settingsMedia.matches)settingsDrawer.append(settingsPanel);
+ else settingsHome.insertBefore(settingsPanel,settingsNext);
+}
+$('settings-toggle').onclick=()=>{if(!settingsMedia.matches)return;settingsDrawer.showModal();$('settings-toggle').setAttribute('aria-expanded','true');document.body.classList.add('settings-open')};
+$('close-settings').onclick=closeSettings;
+settingsDrawer.addEventListener('close',()=>{$('settings-toggle').setAttribute('aria-expanded','false');document.body.classList.remove('settings-open')});
+settingsDrawer.addEventListener('click',event=>{if(event.target!==settingsDrawer)return;const rect=settingsDrawer.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeSettings()});
+settingsMedia.addEventListener('change',placeSettings);placeSettings();
 let songRequest=null;
 function cancelSongRequest(){songRequest?.abort();songRequest=null;$('song-dialog').removeAttribute('aria-busy')}
 function renderSongLibrary(){
@@ -314,7 +327,7 @@ async function openLibrarySong(entry){
  }catch(error){if(songRequest===controller&&$('song-dialog').open)$('song-library-status').textContent=error.name==='AbortError'?'The song took too long to load. Please try again.':error.message+' Please try again or import from files.'}
  finally{clearTimeout(timeout);if(songRequest===controller)cancelSongRequest()}
 }
-$('select-song').onclick=()=>{if(running())return;cancelSongRequest();$('song-search').value='';$('song-instrument').value=$('instrument-select').value;renderSongLibrary();$('song-dialog').showModal();$('song-search').focus()};
+$('select-song').onclick=()=>{if(running())return;closeSettings();cancelSongRequest();$('song-search').value='';$('song-instrument').value=$('instrument-select').value;renderSongLibrary();$('song-dialog').showModal();$('song-search').focus()};
 $('close-song-dialog').onclick=()=>$('song-dialog').close();$('song-dialog').addEventListener('close',cancelSongRequest);$('song-dialog').addEventListener('cancel',cancelSongRequest);
 $('song-search').oninput=()=>{cancelSongRequest();renderSongLibrary()};$('song-instrument').onchange=()=>{cancelSongRequest();renderSongLibrary()};
 $('import-song').onclick=()=>{cancelSongRequest();$('midi-file').click()};
