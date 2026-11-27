@@ -127,6 +127,7 @@ function render(container,key,midi,transpose=0,options={}){
  container.querySelector('svg').setAttribute('aria-label',name(midi)+'; '+result.detail);
  return result.detail;
 }
-const api={diagram,render,stringPosition,pianoFingerings,fluteFingering};
+const violinPoint=(string,offset)=>({x:violinX(offset),y:66+(3-string)*32});
+const api={diagram,render,stringPosition,pianoFingerings,fluteFingering,violinPoint};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ArohaInstrumentView=api;
 })(typeof window!=='undefined'?window:globalThis);

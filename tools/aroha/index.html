@@ -68,10 +68,11 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="style.css?v=20261126-11"><script src="vendor/abcjs.min.js" defer></script><script src="music.js?v=20261126-11" defer></script><script src="pdf-import.js?v=20261126-11" defer></script><script src="audio.js?v=20261126-11" defer></script><script src="instrument-view.js?v=20261126-11" defer></script><script src="song-library.js?v=20261126-11" defer></script><script src="app.js?v=20261126-11" defer></script>
+<link rel="stylesheet" href="style.css?v=20261127-1"><script src="vendor/abcjs.min.js" defer></script><script src="music.js?v=20261127-1" defer></script><script src="pdf-import.js?v=20261127-1" defer></script><script src="audio.js?v=20261127-1" defer></script><script src="instrument-view.js?v=20261127-1" defer></script><script src="song-library.js?v=20261127-1" defer></script><script src="app.js?v=20261127-1" defer></script>
+<script src="nav.js?v=20261127-1" defer></script>
 </head>
 <body>
-<header class="site-header"><button id="settings-toggle" class="icon-button settings-toggle" type="button" aria-label="Open settings" aria-controls="settings-drawer" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><h1 class="brand-title"><a class="brand" href="./" aria-label="Aroha home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Aroha<span class="brand-dot">.</span></a></h1><nav aria-label="Main navigation"><a class="nav-active practice-link" href="#practice">Practice room</a><a class="contact-link" href="contact.html">Contact me</a></nav></header>
+<header class="site-header"><button id="settings-toggle" class="icon-button settings-toggle" type="button" aria-label="Open settings" aria-controls="settings-drawer" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><h1 class="brand-title"><a class="brand" href="./" aria-label="Aroha home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Aroha<span class="brand-dot">.</span></a></h1><nav aria-label="Main navigation"><a class="nav-active song-link" href="#practice" aria-current="page">Song room</a><a class="practice-link" href="practice-room.html">Practice room</a><button class="how-link" type="button" aria-haspopup="dialog" aria-controls="how-dialog">How it works</button><a class="contact-link" href="contact.html">Contact me</a></nav></header>
 <main>
 <div class="workspace" id="practice">
 <aside id="settings-panel" class="setup" aria-label="Practice settings">
@@ -105,19 +106,6 @@
  <p id="app-status" class="app-status" role="status" aria-live="polite"></p>
 </section>
 </div>
-<details class="about-aroha">
- <summary>About Aroha</summary>
- <h2>Learn an instrument with finger placement guides and live feedback</h2>
- <p>Aroha is a free music practice app for violin, piano, guitar and flute. See where to put your fingers on a horizontal instrument diagram, or switch to sheet music. Use your microphone to check pitch, add rhythm checking when you are ready, and hear reference notes played with your selected instrument sound. Follow the current note on the instrument and track correct, wrong and missed notes during each practice session.</p>
- <h3>Finger placement for four instruments</h3>
- <ul><li><strong>Violin:</strong> four first-position finger guides and highlighted open strings. Notes beyond this range indicate that a position shift is needed.</li><li><strong>Piano:</strong> a keyboard view with suggested finger numbers for the left or right hand.</li><li><strong>Guitar:</strong> a fretboard in standard tuning with suggested finger positions.</li><li><strong>Flute:</strong> primary Boehm C-foot fingerings from C4 to C7.</li></ul>
- <p>Fingerings are practice suggestions, not editorial markings from the original score. Advanced positions and alternate fingerings are not all represented.</p>
- <h3>Practice MIDI and PDF sheet music at your pace</h3>
- <p>Choose a library piece or import MIDI or printed PDF sheet music. Practice one note at a time while Aroha waits for the correct pitch, or enable timing feedback to work on rhythm. Choose the starting measure, passage length and playback speed; use the song position slider to revisit a phrase.</p>
- <p>PDF recognition can make mistakes, so review the detected notes before practicing. It needs a modern browser with WebAssembly JSPI support and downloads recognition models on first use. MIDI import works without this PDF recognition feature.</p>
- <h3>Private practice in your browser</h3>
- <p>No account or installation is required. Music files and microphone audio are processed on your device; microphone audio is not recorded or uploaded. Live feedback needs microphone permission and works best with one note at a time in a quiet room.</p>
-</details>
 <footer><span class="brand footer-brand">Aroha.</span><span>Learning music made easy</span><span>MIDI files and microphone audio stay in your browser.</span><a href="vendor/soundfonts/NOTICE.md">Audio credits</a></footer>
 </main>
 <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-title"></dialog>
@@ -130,6 +118,20 @@
  <p id="song-library-status" class="song-library-status" role="status" aria-live="polite"></p>
  <div class="song-library-more"><a id="browse-scores" href="https://www.mutopiaproject.org/browse.html" target="_blank" rel="noopener">Browse more on Mutopia ↗</a><span>Download a MIDI or PDF, then import it here.</span></div>
  <button id="import-song" class="song-import" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5h6l2 2h10v13H3Z"/></svg><span><strong>Import from files</strong><small>PDF · up to 20 MB / MIDI · up to 5 MB</small></span><span aria-hidden="true">→</span></button>
+</dialog>
+<dialog id="how-dialog" class="how-dialog" aria-labelledby="how-title">
+ <button class="icon-button close-dialog" type="button" data-close-dialog aria-label="Close How it works">×</button>
+ <h2 id="how-title">How it works</h2>
+ <h3>Learn an instrument with finger placement guides and live feedback</h3>
+ <p>Aroha is a free music practice app for violin, piano, guitar and flute. See where to put your fingers on a horizontal instrument diagram, or switch to sheet music. Use your microphone to check pitch, add rhythm checking when you are ready, and hear reference notes played with your selected instrument sound. Follow the current note on the instrument and track correct, wrong and missed notes during each practice session.</p>
+ <h4>Finger placement for four instruments</h4>
+ <ul><li><strong>Violin:</strong> four first-position finger guides and highlighted open strings. Notes beyond this range indicate that a position shift is needed.</li><li><strong>Piano:</strong> a keyboard view with suggested finger numbers for the left or right hand.</li><li><strong>Guitar:</strong> a fretboard in standard tuning with suggested finger positions.</li><li><strong>Flute:</strong> primary Boehm C-foot fingerings from C4 to C7.</li></ul>
+ <p>Fingerings are practice suggestions, not editorial markings from the original score. Advanced positions and alternate fingerings are not all represented.</p>
+ <h4>Practice MIDI and PDF sheet music at your pace</h4>
+ <p>Choose a library piece or import MIDI or printed PDF sheet music. Practice one note at a time while Aroha waits for the correct pitch, or enable timing feedback to work on rhythm. Choose the starting measure, passage length and playback speed; use the song position slider to revisit a phrase.</p>
+ <p>PDF recognition can make mistakes, so review the detected notes before practicing. It needs a modern browser with WebAssembly JSPI support and downloads recognition models on first use. MIDI import works without this PDF recognition feature.</p>
+ <h4>Private practice in your browser</h4>
+ <p>No account or installation is required. Music files and microphone audio are processed on your device; microphone audio is not recorded or uploaded. Live feedback needs microphone permission and works best with one note at a time in a quiet room.</p>
 </dialog>
 <dialog id="pdf-import-dialog" class="pdf-import-dialog" aria-labelledby="pdf-import-title" aria-describedby="pdf-import-message" aria-busy="false">
  <div class="pdf-import-symbol" aria-hidden="true">♫</div>

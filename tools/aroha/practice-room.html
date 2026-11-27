@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111018">
+<title>Practice room | Aroha</title>
+<meta name="description" content="Violin ear training and note reading exercises: hear a note and find it on the fingerboard, or read a note on the staff and play it.">
+<link rel="canonical" href="https://prerana-achar.github.io/tools/aroha/practice-room.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Aroha">
+<meta property="og:title" content="Practice room | Aroha">
+<meta property="og:description" content="Violin ear training and note reading exercises: hear a note and find it on the fingerboard, or read a note on the staff and play it.">
+<meta property="og:url" content="https://prerana-achar.github.io/tools/aroha/practice-room.html">
+<link rel="stylesheet" href="style.css?v=20261127-1">
+<script src="vendor/abcjs.min.js" defer></script><script src="music.js?v=20261127-1" defer></script><script src="audio.js?v=20261127-1" defer></script><script src="instrument-view.js?v=20261127-1" defer></script><script src="nav.js?v=20261127-1" defer></script><script src="practice-room.js?v=20261127-1" defer></script>
+</head>
+<body class="info-page">
+<header class="site-header"><a class="brand" href="./" aria-label="Aroha home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Aroha<span class="brand-dot">.</span></a><nav aria-label="Main navigation"><a class="song-link" href="./">Song room</a><a class="nav-active practice-link" href="practice-room.html" aria-current="page">Practice room</a><button class="how-link" type="button" aria-haspopup="dialog" aria-controls="how-dialog">How it works</button><a class="contact-link" href="contact.html">Contact me</a></nav></header>
+<main>
+ <section class="page-card practice-room" aria-labelledby="practice-title">
+  <div class="pr-head">
+   <h1 id="practice-title">Practice room</h1>
+   <div class="pr-instrument"><label for="pr-instrument">Instrument</label><select id="pr-instrument"><option value="violin" selected>Violin</option><option disabled>Piano (coming soon)</option><option disabled>Guitar (coming soon)</option><option disabled>Flute (coming soon)</option></select></div>
+  </div>
+  <div class="pr-tabs" role="tablist" aria-label="Exercise">
+   <button id="tab-guess" class="pr-tab" type="button" role="tab" aria-selected="true" aria-controls="pr-panel" data-mode="guess">Guess the note</button>
+   <button id="tab-read" class="pr-tab" type="button" role="tab" aria-selected="false" aria-controls="pr-panel" data-mode="read" tabindex="-1">Read the note</button>
+  </div>
+  <div id="pr-panel" class="pr-panel" role="tabpanel" aria-labelledby="tab-guess">
+   <div class="pr-prompt">
+    <div id="guess-prompt" class="pr-mode">
+     <p class="pr-instructions">Listen to the note, then tap where your finger goes on the violin.</p>
+     <button id="pr-play" class="button primary" type="button"><span aria-hidden="true">▶</span><span>Play note</span></button>
+    </div>
+    <div id="read-prompt" class="pr-mode" hidden>
+     <p class="pr-instructions">Play the note shown on the staff.</p>
+     <div id="pr-staff" class="pr-staff" role="img" aria-label="Note on the staff"></div>
+     <div class="pr-mic"><button id="pr-mic" class="button primary" type="button">Turn on microphone</button><span class="pr-heard"><span class="small-label">HEARD</span> <strong id="pr-heard">—</strong></span></div>
+    </div>
+   </div>
+   <div id="pr-diagram" class="instrument-diagram pr-diagram" aria-label="Violin fingerboard"></div>
+   <div id="pr-feedback" class="pr-feedback" role="status" aria-live="polite"><strong id="pr-feedback-title">Ready when you are.</strong> <span id="pr-feedback-text">Press Play note to hear your first note.</span></div>
+   <div class="pr-actions">
+    <button id="pr-hear" class="button secondary" type="button" hidden>Hear it</button>
+    <button id="pr-reveal" class="button secondary" type="button">Show answer</button>
+    <button id="pr-next" class="button secondary" type="button">Next note</button>
+    <label class="pr-check"><input id="pr-sharps" type="checkbox"> Include sharps</label>
+    <span class="pr-score"><span class="small-label">FIRST TRY</span> <strong id="pr-score">0 / 0</strong></span>
+   </div>
+  </div>
+ </section>
+ <footer><a class="brand footer-brand" href="./">Aroha.</a><span>Learning music made easy</span></footer>
+</main>
+</body>
+</html>
